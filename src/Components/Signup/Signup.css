@@ -1,0 +1,11 @@
+.text_und {
+    text-decoration: underline;
+    text-decoration-color: #152a38;
+    text-decoration-thickness: 2px;
+}
+
+.hover\:text_und:hover {
+    text-decoration: underline;
+    text-decoration-color: #152a38;
+    text-decoration-thickness: 2px;
+}

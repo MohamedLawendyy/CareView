@@ -1,0 +1,5 @@
+@import 'typeface-lato';
+
+body {
+  overflow-x: hidden; /* Prevent horizontal scroll during animations */
+}
