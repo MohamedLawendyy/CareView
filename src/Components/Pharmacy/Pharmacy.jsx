@@ -26,11 +26,96 @@ export default function Pharmacy() {
                 if (!response.ok) throw new Error("Failed to fetch products");
                 const data = await response.json();
                 setProducts(data);
-                setFilteredProducts(data);
+                // setFilteredProducts(data);
+
             } catch (err) {
                 setError(err.message);
+
             } finally {
                 setLoading(false);
+                // static response
+                setFilteredProducts([
+                    {
+                        "id": 1,
+                        "name": "Night Cream",
+                        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+                        "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
+                        "price": 200,
+                        "stockQuantity": 5
+                    },
+                    {
+                        "id": 2,
+                        "name": "Hand Cream",
+                        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+                        "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
+                        "price": 200,
+                        "stockQuantity": 3
+                    },
+                    {
+                        "id": 3,
+                        "name": "UnderEye Cream",
+                        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+                        "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
+                        "price": 200,
+                        "stockQuantity": 5
+                    },
+                    {
+                        "id": 4,
+                        "name": "SunScreen",
+                        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+                        "imageUrl": "https://localhost:7290/images/products/sb-ang1.jpeg",
+                        "price": 300,
+                        "stockQuantity": 5
+                    },
+                    {
+                        "id": 5,
+                        "name": "Hair Serum",
+                        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+                        "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
+                        "price": 200,
+                        "stockQuantity": 5
+                    },
+                    {
+                        "id": 6,
+                        "name": "BodyLotion",
+                        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+                        "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
+                        "price": 900,
+                        "stockQuantity": 9
+                    },
+                    {
+                        "id": 7,
+                        "name": "Motinorm",
+                        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+                        "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
+                        "price": 200,
+                        "stockQuantity": 5
+                    },
+                    {
+                        "id": 8,
+                        "name": "Zisrocin",
+                        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+                        "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
+                        "price": 100,
+                        "stockQuantity": 1
+                    },
+                    {
+                        "id": 9,
+                        "name": "Vonaspire",
+                        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+                        "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
+                        "price": 200,
+                        "stockQuantity": 5
+                    },
+                    {
+                        "id": 10,
+                        "name": "Pandol Extra",
+                        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+                        "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
+                        "price": 200,
+                        "stockQuantity": 7
+                    }
+                ]);
             }
         };
         fetchProducts();
@@ -56,7 +141,7 @@ export default function Pharmacy() {
                 (product) =>
                     product.category &&
                     product.category.toLowerCase() ===
-                        selectedCategory.toLowerCase()
+                    selectedCategory.toLowerCase()
             );
         }
 
@@ -231,7 +316,7 @@ export default function Pharmacy() {
 
             {/* Pagination buttons */}
             <div>
-                <div className="flex flex items-center justify-center pt-8">
+                <div className="flex items-center justify-center pt-8">
                     {/* Previous Button */}
                     <a
                         href="#"

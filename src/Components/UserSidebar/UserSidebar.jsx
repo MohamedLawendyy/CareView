@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, NavLink } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -7,54 +7,36 @@ import LogoSVG from "../../assets/images/Login&Signup Logo.svg";
 
 export default function UserSidebar({ isSidebarOpen, toggleSidebar }) {
     const [activeSection, setActiveSection] = useState("Home");
-    const [hoveredSection, setHoveredSection] = useState(null);
+    const [hoveredItem, setHoveredItem] = useState(null);
     const navigate = useNavigate();
-    const location = useLocation();  // Use location to track current route
+    const location = useLocation();
 
-    const mainSections = [
+    const navItems = [
         { name: "Home", icon: "tabler:home-filled", path: "/home" },
         { name: "My Diagnoses", icon: "tabler:clipboard-text-filled", path: "/my-diagnoses" },
+        { name: "Doctor finder", icon: "tabler:clipboard-text-filled", path: "/doctor-finder" },
         { name: "Pharmacy", icon: "healthicons:pharmacy-24px", path: "/pharmacy" },
         { name: "Post Treatment", icon: "ic:baseline-monitor-heart", path: "/post-treatment" },
         { name: "Help & Support", icon: "mdi:help-circle", path: "/help-support" },
         { name: "Settings", icon: "mdi:cog", path: "/settings" },
     ];
 
-    const bottomSections = [
+    const bottomItems = [
         {
             name: "Logout",
             icon: "majesticons:logout",
+            path: "#logout",
             textColor: "text-red-600",
             iconColor: "text-red-600",
-            isLogout: true,
-            alignLeft: true,
-        },
-        {
-            name: "Upload Your X-Ray",
-            icon: "ic:round-upload",
-            outline: "outline-4 outline-dashed outline-black",
-            bgColor: "bg-third",
-            iconColor: "text-white",
-            isUpload: true,
-            iconSize: 32,
-            containerSizeClosed: "h-12 w-12",
         },
     ];
 
     const handleLogout = () => {
-        // Show confirmation dialog
-        if (!window.confirm("Are you sure you want to log out?")) {
-            return;
-        }
+        if (!window.confirm("Are you sure you want to log out?")) return;
 
-        // Clear authentication data
         localStorage.removeItem("authToken");
         localStorage.removeItem("userData");
 
-        // Clear any state management (if using context/redux)
-        // dispatch({ type: "LOGOUT" });
-
-        // Show success toast
         toast.success("Logged out successfully", {
             position: "top-right",
             autoClose: 3000,
@@ -65,143 +47,83 @@ export default function UserSidebar({ isSidebarOpen, toggleSidebar }) {
             progress: undefined,
         });
 
-        // Navigate to landing page after a short delay
-        setTimeout(() => {
-            navigate("/LandPage");
-        }, 500);
+        setTimeout(() => navigate("/LandPage"), 500);
     };
 
-    const handleNavigation = (sectionName) => {
-        const routes = {
-            Home: "/home",
-            "My Diagnoses": "/my-diagnoses",
-            Pharmacy: "/pharmacy",
-            "Post Treatment": "/post-treatment",
-            "Help & Support": "/help-support",
-            Settings: "/settings",
-        };
-
-        if (sectionName === "Logout") {
+    const handleItemClick = (item) => {
+        if (item.name === "Logout") {
             handleLogout();
             return;
         }
-
-        if (routes[sectionName]) {
-            navigate(routes[sectionName]);
-            setActiveSection(sectionName);
-        }
+        navigate(item.path);
+        setActiveSection(item.name);
     };
 
     useEffect(() => {
-        // Update active section based on current route
-        const currentPath = location.pathname;
-
-        const matchedSection = mainSections.find(
-            (section) => section.path === currentPath
-        );
-
-        if (matchedSection) {
-            setActiveSection(matchedSection.name);
-        }
-    }, [location.pathname]);  // Runs when the location changes
+        const currentItem = navItems.find(item => item.path === location.pathname);
+        if (currentItem) setActiveSection(currentItem.name);
+    }, [location.pathname]);
 
     return (
         <div
-            className={`bg-primary text-textPrimary ${isSidebarOpen ? "w-64" : "w-20"} py-7 px-2 fixed inset-y-0 left-0 transition-all duration-300 ease-in-out flex flex-col z-50`}
+            className={`bg-primary text-textPrimary ${isSidebarOpen ? "w-64" : "w-20"} h-screen py-7 px-2 fixed top-0 left-0 transition-all duration-300 flex flex-col z-50`}
         >
-            {/* Logo and Toggle Section */}
-            <div className="relative px-4 mb-12">
+            {/* Logo and Toggle */}
+            <div className="relative px-4 mb-8">
                 <div className="flex items-center">
-                    <img src={LogoSVG} className="w-8 h-8" alt="logo" />
-                    <span
-                        className={`text-xl font-extrabold text-secondary ml-2 transition-all duration-300 ${
-                            isSidebarOpen ? "opacity-100" : "opacity-0 w-0"
-                        }`}
-                    >
-                        CareView
-                    </span>
+                    <img src={LogoSVG} className="w-8 h-8" alt="CareView Logo" />
+                    {isSidebarOpen && (
+                        <span className="text-xl font-extrabold text-secondary ml-2">
+                            CareView
+                        </span>
+                    )}
                 </div>
 
                 <button
                     onClick={toggleSidebar}
-                    className="absolute -right-6 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-secondary border-2 border-primary text-white hover:bg-secondary/90 transition-all duration-200 shadow-md z-10"
-                    aria-label={
-                        isSidebarOpen ? "Collapse sidebar" : "Expand sidebar"
-                    }
+                    className="absolute -right-6 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-secondary border-2 border-primary text-white hover:bg-secondary/90 transition-all shadow-md z-10"
+                    aria-label={isSidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
                 >
                     <Icon
-                        icon={
-                            isSidebarOpen
-                                ? "mdi:chevron-left"
-                                : "mdi:chevron-right"
-                        }
+                        icon={isSidebarOpen ? "mdi:chevron-left" : "mdi:chevron-right"}
                         width="18"
                         height="18"
                     />
                 </button>
-
-                {!isSidebarOpen && (
-                    <div className="absolute left-full ml-3 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
-                        Toggle Sidebar
-                    </div>
-                )}
             </div>
 
-            {/* Main Navigation Links */}
-            <nav className="space-y-2 flex-1">
-                {mainSections.map((section) => (
+            {/* Main Navigation */}
+            <nav className="flex-1 space-y-2 overflow-y-auto">
+                {navItems.map((item) => (
                     <div
-                        key={section.name}
+                        key={item.name}
                         className="relative h-12"
-                        onMouseEnter={() => setHoveredSection(section.name)}
-                        onMouseLeave={() => setHoveredSection(null)}
+                        onMouseEnter={() => setHoveredItem(item.name)}
+                        onMouseLeave={() => setHoveredItem(null)}
                     >
                         <button
-                            onClick={() => handleNavigation(section.name)}
-                            className={`w-full text-left flex items-center h-full ${
-                                isSidebarOpen ? "pl-4 pr-4" : "pl-4 pr-0"
-                            } font-medium rounded-lg transition-colors duration-300 relative overflow-hidden ${
-                                activeSection === section.name
-                                    ? "bg-secondary"
-                                    : "hover:bg-gray-700/30"
-                            }`}
-                        >
-                            <div className="w-6 flex-shrink-0 flex justify-start">
-                                <Icon
-                                    icon={section.icon}
-                                    width="24"
-                                    height="24"
-                                    className={`transition-colors duration-200 ${
-                                        activeSection === section.name
-                                            ? "text-white"
-                                            : "text-third"
-                                    }`}
-                                />
-                            </div>
-
-                            <span
-                                className={`transition-all duration-300 ${
-                                    isSidebarOpen
-                                        ? "ml-4 opacity-100 w-auto"
-                                        : "ml-0 opacity-0 w-0"
-                                } ${
-                                    activeSection === section.name
-                                        ? "text-white font-semibold"
-                                        : "text-third hover:text-secondary"
+                            onClick={() => handleItemClick(item)}
+                            className={`w-full flex items-center h-full ${isSidebarOpen ? "px-4" : "px-3"} rounded-lg transition-colors ${activeSection === item.name
+                                    ? "bg-secondary text-white"
+                                    : "hover:bg-gray-700/30 text-third"
                                 }`}
-                            >
-                                {section.name}
-                            </span>
+                        >
+                            <Icon
+                                icon={item.icon}
+                                width="24"
+                                height="24"
+                                className={activeSection === item.name ? "text-white" : "text-third"}
+                            />
 
-                            {!isSidebarOpen && (
-                                <div
-                                    className={`absolute left-full ml-3 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 transition-opacity duration-200 whitespace-nowrap ${
-                                        hoveredSection === section.name
-                                            ? "opacity-100"
-                                            : "opacity-0"
-                                    }`}
-                                >
-                                    {section.name}
+                            {isSidebarOpen && (
+                                <span className="ml-4 font-medium">
+                                    {item.name}
+                                </span>
+                            )}
+
+                            {!isSidebarOpen && hoveredItem === item.name && (
+                                <div className="absolute left-full ml-3 px-2 py-1 bg-gray-800 text-white text-sm rounded whitespace-nowrap">
+                                    {item.name}
                                 </div>
                             )}
                         </button>
@@ -209,81 +131,36 @@ export default function UserSidebar({ isSidebarOpen, toggleSidebar }) {
                 ))}
             </nav>
 
-            {/* Bottom Sections - Upload X-Ray and Logout */}
-            <div className="mt-auto pb-4 space-y-4">
-                {bottomSections.map((section) => (
+            {/* Bottom Actions */}
+            <div className="mt-auto pt-4 space-y-2 border-t border-gray-700">
+                {bottomItems.map((item) => (
                     <div
-                        key={section.name}
-                        className={`relative ${
-                            section.isUpload
-                                ? isSidebarOpen
-                                    ? "h-40 origin-top-left transition-all duration-300"
-                                    : `${section.containerSizeClosed} origin-top-left transition-all duration-300`
-                                : "h-12"
-                        } ${
-                            section.isUpload && !isSidebarOpen ? "mx-auto" : ""
-                        }`}
+                        key={item.name}
+                        className="relative h-12"
+                        onMouseEnter={() => setHoveredItem(item.name)}
+                        onMouseLeave={() => setHoveredItem(null)}
                     >
                         <button
-                            onClick={() => handleNavigation(section.name)}
-                            className={`flex w-full ${
-                                section.alignLeft
-                                    ? "items-center"
-                                    : isSidebarOpen && section.isUpload
-                                    ? "flex-col items-center justify-center"
-                                    : "items-center justify-center"
-                            } h-full ${
-                                isSidebarOpen
-                                    ? "px-4"
-                                    : section.alignLeft
-                                    ? "pl-4 pr-0"
-                                    : "px-0"
-                            } font-medium rounded-lg transition-all duration-300 relative ${
-                                section.outline || ""
-                            } ${section.bgColor || ""}`}
+                            onClick={() => handleItemClick(item)}
+                            className={`w-full flex items-center h-full ${isSidebarOpen ? "px-4" : "px-3"} rounded-lg transition-colors ${item.textColor || "text-third"
+                                } hover:bg-gray-700/30`}
                         >
-                            <div
-                                className={`flex items-center ${
-                                    section.alignLeft
-                                        ? "justify-start"
-                                        : "justify-center"
-                                } ${
-                                    section.isUpload && isSidebarOpen
-                                        ? "mb-4"
-                                        : ""
-                                }`}
-                            >
-                                <Icon
-                                    icon={section.icon}
-                                    width={section.iconSize || 24}
-                                    height={section.iconSize || 24}
-                                    className={`${section.iconColor} transition-colors duration-200`}
-                                />
-                            </div>
+                            <Icon
+                                icon={item.icon}
+                                width="24"
+                                height="24"
+                                className={item.iconColor || "text-third"}
+                            />
 
-                            {isSidebarOpen || !section.isUpload ? (
-                                <span
-                                    className={`transition-all duration-300 ${
-                                        section.alignLeft
-                                            ? "ml-4"
-                                            : isSidebarOpen && section.isUpload
-                                            ? "mt-0"
-                                            : ""
-                                    } ${
-                                        isSidebarOpen
-                                            ? section.isUpload
-                                                ? "text-center font-semibold text-lg text-white"
-                                                : `${section.textColor} font-bold`
-                                            : "ml-0 opacity-0 w-0"
-                                    }`}
-                                >
-                                    {section.name}
+                            {isSidebarOpen && (
+                                <span className={`ml-4 font-medium ${item.textColor || "text-third"}`}>
+                                    {item.name}
                                 </span>
-                            ) : null}
+                            )}
 
-                            {!isSidebarOpen && !section.isLogout && (
-                                <div className="absolute left-full ml-3 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 transition-opacity duration-200 whitespace-nowrap">
-                                    {section.name}
+                            {!isSidebarOpen && hoveredItem === item.name && (
+                                <div className="absolute left-full ml-3 px-2 py-1 bg-gray-800 text-white text-sm rounded whitespace-nowrap">
+                                    {item.name}
                                 </div>
                             )}
                         </button>

@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function ProductCard({ product, onAddToCart, defaultImage }) {
     const [quantity, setQuantity] = useState(1);
+
     const [isHovered, setIsHovered] = useState(false);
     const [isAdded, setIsAdded] = useState(false);
     const [isOutOfStock, setIsOutOfStock] = useState(product.stockQuantity === 0);
@@ -13,9 +14,9 @@ export default function ProductCard({ product, onAddToCart, defaultImage }) {
         try {
             // Use the existing GET product by ID endpoint
             const response = await fetch(`https://localhost:7290/api/Products/${product.id}`);
-            
+
             if (!response.ok) throw new Error('Failed to fetch product');
-            
+
             const currentProduct = await response.json();
             const currentStock = currentProduct.stockQuantity;
 
@@ -31,12 +32,12 @@ export default function ProductCard({ product, onAddToCart, defaultImage }) {
             }
 
             const success = await onAddToCart(product, quantity);
-            
+
             if (success) {
                 setIsAdded(true);
                 setQuantity(1);
                 setTimeout(() => setIsAdded(false), 2000);
-                
+
                 if (currentStock - quantity === 0) {
                     setIsOutOfStock(true);
                 }
@@ -60,9 +61,8 @@ export default function ProductCard({ product, onAddToCart, defaultImage }) {
 
     return (
         <div
-            className={`relative bg-primary p-3 sm:p-4 rounded-xl shadow-lg transition-all duration-300 transform ${
-                isHovered ? "-translate-y-1 shadow-xl" : ""
-            }`}
+            className={`relative bg-primary p-3 sm:p-4 rounded-xl shadow-lg transition-all duration-300 transform ${isHovered ? "-translate-y-1 shadow-xl" : ""
+                }`}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
@@ -78,9 +78,8 @@ export default function ProductCard({ product, onAddToCart, defaultImage }) {
                 <img
                     src={product.imageUrl || defaultImage}
                     alt={product.name}
-                    className={`w-full h-full object-cover rounded-lg transition-transform duration-500 ${
-                        isHovered ? "scale-105" : "scale-100"
-                    }`}
+                    className={`w-full h-full object-cover rounded-lg transition-transform duration-500 ${isHovered ? "scale-105" : "scale-100"
+                        }`}
                     onError={(e) => {
                         e.target.src = defaultImage;
                     }}
@@ -146,13 +145,12 @@ export default function ProductCard({ product, onAddToCart, defaultImage }) {
             <button
                 onClick={handleAddToCart}
                 disabled={isOutOfStock || isAdded}
-                className={`w-full py-2 sm:py-3 rounded-xl font-medium sm:font-bold text-sm sm:text-base transition-all duration-300 flex items-center justify-center ${
-                    isOutOfStock
-                        ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                        : isAdded
+                className={`w-full py-2 sm:py-3 rounded-xl font-medium sm:font-bold text-sm sm:text-base transition-all duration-300 flex items-center justify-center ${isOutOfStock
+                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                    : isAdded
                         ? "bg-green-500 text-white transform scale-95"
                         : "bg-third text-bg hover:bg-secondary hover:text-white active:scale-95"
-                }`}
+                    }`}
                 aria-label={isOutOfStock ? "Out of stock" : "Add to cart"}
             >
                 {isOutOfStock ? (

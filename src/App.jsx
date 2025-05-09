@@ -4,8 +4,10 @@ import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import AuthContextProvider from "./Context/AuthContext"; // Default import here
+import AuthContextProvider from "./Context/AuthContext";
 import MainLayout from "./Components/Layout/MainLayout.jsx";
+import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute.jsx";
+import Doctors from "./Components/DoctorFinder/Doctors.jsx";
 
 // Lazy-loaded components
 const Login = React.lazy(() => import("./Components/Login/Login.jsx"));
@@ -38,6 +40,10 @@ const NotFound = React.lazy(() => import("./Components/NotFound/NotFound.jsx"));
 const router = createBrowserRouter([
     // Public routes (without sidebar)
     {
+        path: "/",
+        element: <LandPage />,
+    },
+    {
         path: "/login",
         element: <Login />,
     },
@@ -57,18 +63,16 @@ const router = createBrowserRouter([
         path: "/resetpassword",
         element: <ResetPassword />,
     },
-    {
-        path: "/landpage",
-        element: <LandPage />,
-    },
 
-    // Protected routes with sidebar, wrapped in AuthContextProvider
+    // Protected routes with sidebar
     {
         path: "/",
         element: (
-            <AuthContextProvider>
-                <MainLayout />
-            </AuthContextProvider>
+            <ProtectedRoute>
+                <AuthContextProvider>
+                    <MainLayout />
+                </AuthContextProvider>
+            </ProtectedRoute>
         ),
         children: [
             {
@@ -96,6 +100,9 @@ const router = createBrowserRouter([
                 element: <HelpSupport />,
             },
             {
+                path: "doctor-finder",
+                element: <Doctors />,
+            }, {
                 path: "settings",
                 element: <Settings />,
             },
@@ -108,6 +115,8 @@ const router = createBrowserRouter([
         element: <NotFound />,
     },
 ]);
+
+
 
 function App() {
     return (
