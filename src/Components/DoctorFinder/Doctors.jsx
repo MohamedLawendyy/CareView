@@ -7,15 +7,22 @@ export default function Doctors() {
 
     const [doctors, setdoctors] = useState([])
 
+    let userToken = localStorage.getItem("userToken")
     async function getDoctors() {
         try {
-            const doctors = await axios.get('https://careview.runasp.net/api/Account/doctors')
-            setdoctors(doctors)
+            const response = await axios.get('https://careview.runasp.net/api/Account/doctors', {
+                headers: {
+                    'Authorization': `Bearer ${userToken}` // 👈 Add the token here
+                }
+            });
+            console.log(response)
+            setdoctors(response.data); // Make sure to use `response.data`
         } catch (error) {
-            toast.error(error.response.data.message || 'Something went wrong')
+            console.log(error)
+            toast.error(error.response?.data?.message || 'Failed to fetch doctors');
         }
         finally {
-            staticDoctors()
+            // staticDoctors()
         }
     }
 
@@ -154,7 +161,7 @@ export default function Doctors() {
 
     return <>
         <div className="flex flex-col p-5">
-            <h1 className='text-2xl text-center font-bold'>Doctors to appoint</h1>
+            <h1 className='text-2xl text-center font-bold'>Doctors to appointment</h1>
             <div className="flex flex-wrap">
                 {doctors.map((doctor) => {
                     return <div key={doctor.id} className="w-1/3 p-4"><DoctorCard doctor={doctor} /></div>

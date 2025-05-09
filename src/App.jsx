@@ -10,6 +10,7 @@ import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute.jsx";
 import Doctors from "./Components/DoctorFinder/Doctors.jsx";
 
 // Lazy-loaded components
+const DoctorSignup = React.lazy(() => import("./Components/Signup/DoctorSignup.jsx"))
 const Login = React.lazy(() => import("./Components/Login/Login.jsx"));
 const Signup = React.lazy(() => import("./Components/Signup/Signup.jsx"));
 const Pharmacy = React.lazy(() => import("./Components/Pharmacy/Pharmacy.jsx"));
@@ -40,7 +41,7 @@ const NotFound = React.lazy(() => import("./Components/NotFound/NotFound.jsx"));
 const router = createBrowserRouter([
     // Public routes (without sidebar)
     {
-        path: "/",
+        path: "/landpage",
         element: <LandPage />,
     },
     {
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
     {
         path: "/signup",
         element: <Signup />,
+    },
+    {
+        path: "/doctor-signup",
+        element: <DoctorSignup />,
     },
     {
         path: "/forgetpassword",

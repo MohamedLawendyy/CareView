@@ -13,7 +13,7 @@ export default function ProductCard({ product, onAddToCart, defaultImage }) {
     const handleAddToCart = async () => {
         try {
             // Use the existing GET product by ID endpoint
-            const response = await fetch(`https://localhost:7290/api/Products/${product.id}`);
+            const response = await fetch(`https://careview.runasp.net/api/Products/${product.id}`);
 
             if (!response.ok) throw new Error('Failed to fetch product');
 

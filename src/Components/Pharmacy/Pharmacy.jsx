@@ -21,101 +21,99 @@ export default function Pharmacy() {
             try {
                 setLoading(true);
                 const response = await fetch(
-                    "https://localhost:7290/api/Products/GetAllProducts"
+                    "https://careview.runasp.net/api/Products/GetAllProducts"
                 );
                 if (!response.ok) throw new Error("Failed to fetch products");
                 const data = await response.json();
                 setProducts(data);
                 // setFilteredProducts(data);
-
             } catch (err) {
                 setError(err.message);
-
             } finally {
                 setLoading(false);
                 // static response
-                setFilteredProducts([
-                    {
-                        "id": 1,
-                        "name": "Night Cream",
-                        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-                        "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
-                        "price": 200,
-                        "stockQuantity": 5
-                    },
-                    {
-                        "id": 2,
-                        "name": "Hand Cream",
-                        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-                        "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
-                        "price": 200,
-                        "stockQuantity": 3
-                    },
-                    {
-                        "id": 3,
-                        "name": "UnderEye Cream",
-                        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-                        "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
-                        "price": 200,
-                        "stockQuantity": 5
-                    },
-                    {
-                        "id": 4,
-                        "name": "SunScreen",
-                        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-                        "imageUrl": "https://localhost:7290/images/products/sb-ang1.jpeg",
-                        "price": 300,
-                        "stockQuantity": 5
-                    },
-                    {
-                        "id": 5,
-                        "name": "Hair Serum",
-                        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-                        "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
-                        "price": 200,
-                        "stockQuantity": 5
-                    },
-                    {
-                        "id": 6,
-                        "name": "BodyLotion",
-                        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-                        "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
-                        "price": 900,
-                        "stockQuantity": 9
-                    },
-                    {
-                        "id": 7,
-                        "name": "Motinorm",
-                        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-                        "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
-                        "price": 200,
-                        "stockQuantity": 5
-                    },
-                    {
-                        "id": 8,
-                        "name": "Zisrocin",
-                        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-                        "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
-                        "price": 100,
-                        "stockQuantity": 1
-                    },
-                    {
-                        "id": 9,
-                        "name": "Vonaspire",
-                        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-                        "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
-                        "price": 200,
-                        "stockQuantity": 5
-                    },
-                    {
-                        "id": 10,
-                        "name": "Pandol Extra",
-                        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-                        "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
-                        "price": 200,
-                        "stockQuantity": 7
-                    }
-                ]);
+                // setFilteredProducts([
+                //     {
+                //         "id": 1,
+                //         "name": "Night Cream",
+                //         "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+                //         "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
+                //         "price": 200,
+                //         "stockQuantity": 5
+                //     },
+                //     {
+                //         "id": 2,
+                //         "name": "Hand Cream",
+                //         "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+                //         "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
+                //         "price": 200,
+                //         "stockQuantity": 3
+                //     },
+                //     {
+                //         "id": 3,
+                //         "name": "UnderEye Cream",
+                //         "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+                //         "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
+                //         "price": 200,
+                //         "stockQuantity": 5
+                //     },
+                //     {
+                //         "id": 4,
+                //         "name": "SunScreen",
+                //         "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+                //         "imageUrl": "https://localhost:7290/images/products/sb-ang1.jpeg",
+                //         "price": 300,
+                //         "stockQuantity": 5
+                //     },
+                //     {
+                //         "id": 5,
+                //         "name": "Hair Serum",
+                //         "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+                //         "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
+                //         "price": 200,
+                //         "stockQuantity": 5
+                //     },
+                //     {
+                //         "id": 6,
+                //         "name": "BodyLotion",
+                //         "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+                //         "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
+                //         "price": 900,
+                //         "stockQuantity": 9
+                //     },
+                //     {
+                //         "id": 7,
+                //         "name": "Motinorm",
+                //         "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+                //         "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
+                //         "price": 200,
+                //         "stockQuantity": 5
+                //     },
+                //     {
+                //         "id": 8,
+                //         "name": "Zisrocin",
+                //         "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+                //         "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
+                //         "price": 100,
+                //         "stockQuantity": 1
+                //     },
+                //     {
+                //         "id": 9,
+                //         "name": "Vonaspire",
+                //         "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+                //         "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
+                //         "price": 200,
+                //         "stockQuantity": 5
+                //     },
+                //     {
+                //         "id": 10,
+                //         "name": "Pandol Extra",
+                //         "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
+                //         "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
+                //         "price": 200,
+                //         "stockQuantity": 7
+                //     }
+                // ]);
             }
         };
         fetchProducts();
@@ -141,7 +139,7 @@ export default function Pharmacy() {
                 (product) =>
                     product.category &&
                     product.category.toLowerCase() ===
-                    selectedCategory.toLowerCase()
+                        selectedCategory.toLowerCase()
             );
         }
 
@@ -267,13 +265,13 @@ export default function Pharmacy() {
                 </div>
 
                 {/* Error Message */}
-                {error && (
+                {/* {error && (
                     <Message
                         severity="error"
                         text={error}
                         onClose={() => setError(null)}
                     />
-                )}
+                )} */}
 
                 {/* Loading State */}
                 {loading ? (
@@ -315,55 +313,58 @@ export default function Pharmacy() {
             </div>
 
             {/* Pagination buttons */}
-            <div>
-                <div className="flex items-center justify-center pt-8">
-                    {/* Previous Button */}
-                    <a
-                        href="#"
-                        className="flex items-center justify-center px-4 h-10 me-3 text-base font-medium text-bg bg-secondary border border-bg  rounded-lg hover:bg-third/80 hover:text-bg hover:border-third/80 dark:bg-third dark:border-bg dark:text-bg dark:hover:bg-secondary dark:hover:text-bg"
-                    >
-                        <svg
-                            className="w-3.5 h-3.5 me-2 rtl:rotate-180"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 14 10"
+            {filteredProducts.length > 0 && (
+                <div>
+                    <div className="flex items-center justify-center pt-8">
+                        {/* Previous Button */}
+                        <a
+                            href="#"
+                            className="flex items-center justify-center px-4 h-10 me-3 text-base font-medium text-bg bg-secondary border border-bg  rounded-lg hover:bg-third/80 hover:text-bg hover:border-third/80 dark:bg-third dark:border-bg dark:text-bg dark:hover:bg-secondary dark:hover:text-bg"
                         >
-                            <path
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M13 5H1m0 0 4 4M1 5l4-4"
-                            />
-                        </svg>
-                        Previous
-                    </a>
+                            <svg
+                                className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 14 10"
+                            >
+                                <path
+                                    stroke="currentColor"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M13 5H1m0 0 4 4M1 5l4-4"
+                                />
+                            </svg>
+                            Previous
+                        </a>
 
-                    {/* Next Button */}
-                    <a
-                        href="#"
-                        className="flex items-center justify-center px-4 h-10 text-base font-medium text-bg bg-secondary border border-bg  rounded-lg hover:bg-third/80 hover:text-bg hover:border-third/80 dark:bg-third dark:border-bg dark:text-bg dark:hover:bg-secondary dark:hover:text-bg"
-                    >
-                        Next
-                        <svg
-                            className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 14 10"
+                        {/* Next Button */}
+                        <a
+                            href="#"
+                            className="flex items-center justify-center px-4 h-10 text-base font-medium text-bg bg-secondary border border-bg  rounded-lg hover:bg-third/80 hover:text-bg hover:border-third/80 dark:bg-third dark:border-bg dark:text-bg dark:hover:bg-secondary dark:hover:text-bg"
                         >
-                            <path
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M1 5h12m0 0L9 1m4 4L9 9"
-                            />
-                        </svg>
-                    </a>
+                            Next
+                            <svg
+                                className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 14 10"
+                            >
+                                <path
+                                    stroke="currentColor"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M1 5h12m0 0L9 1m4 4L9 9"
+                                />
+                            </svg>
+                        </a>
+                    </div>
                 </div>
-            </div>
+            )}
+            
             {/* Cart Modal */}
             {showCart && (
                 <CartModal

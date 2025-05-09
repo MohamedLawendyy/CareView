@@ -62,7 +62,7 @@ export default function Signup() {
                 await formik.validateForm(values);
 
                 // If validation passes, proceed with submission
-                await axios.post("http://localhost:5296/api/Account/Register", {
+                await axios.post("https://careview.runasp.net/api/Account/Register", {
                     firstName: values.firstName,
                     lastName: values.lastName,
                     email: values.email,

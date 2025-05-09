@@ -6,7 +6,7 @@ import LogoSVG from "../../assets/images/Login&Signup Logo.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import axios from "axios";  
+import axios from "axios";
 import toast from "react-hot-toast";
 import { Icon } from "@iconify/react";
 
@@ -41,7 +41,7 @@ export default function Login() {
         onSubmit: async (values) => {
             try {
                 const response = await axios.post(
-                    "http://localhost:5296/api/Account/Login",
+                    "https://careview.runasp.net/api/Account/Login",
                     {
                         email: values.email,
                         password: values.password,
@@ -51,7 +51,6 @@ export default function Login() {
                         headers: {
                             "Content-Type": "application/json",
                         },
-                        withCredentials: false, // assuming you're not using cookies
                     }
                 );
 
@@ -241,12 +240,20 @@ export default function Login() {
                             </div>
                         </form>
                         <div className="text-center text-lg font-medium textPrimary">
-                            <span>Or sign in with</span>
+                            <span>Or signup </span>
                         </div>
-                        <div className="group relative w-full flex justify-center items-center py-4 px-4 border-2 border-borderSec text-sm font-medium rounded-md textPrimary bg-transparent hover:bg-gray-50 transition-colors cursor-pointer">
-                            <i className="fab fa-xl fa-google mr-4"></i> Log in
-                            with Google
-                        </div>
+                        <Link
+                            to="/doctor-signup"
+                            className="group relative w-full flex justify-center items-center py-4 px-4 border-2 border-borderSec text-sm font-bold rounded-md textPrimary bg-transparent hover:bg-gray-50 transition-colors cursor-pointer"
+                        >
+                            <Icon
+                                icon="fontisto:doctor"
+                                width="21"
+                                height="24"
+                                className="mr-4"
+                            />
+                            Sign up as doctor
+                        </Link>
                         <div className="text-center text-lg font-medium textPrimary">
                             <span className="textPrimary">
                                 Don't have an account?{" "}

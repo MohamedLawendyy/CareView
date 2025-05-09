@@ -34,8 +34,8 @@ export default function UserSidebar({ isSidebarOpen, toggleSidebar }) {
     const handleLogout = () => {
         if (!window.confirm("Are you sure you want to log out?")) return;
 
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("userData");
+            localStorage.removeItem("userToken");
+            localStorage.removeItem("userData");
 
         toast.success("Logged out successfully", {
             position: "top-right",
