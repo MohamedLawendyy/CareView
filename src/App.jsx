@@ -8,9 +8,12 @@ import AuthContextProvider from "./Context/AuthContext";
 import MainLayout from "./Components/Layout/MainLayout.jsx";
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute.jsx";
 import Doctors from "./Components/DoctorFinder/Doctors.jsx";
+import Chatbot from "./Components/Chatbot/Chatbot.jsx"; // Import the Chatbot component
 
 // Lazy-loaded components
-const DoctorSignup = React.lazy(() => import("./Components/Signup/DoctorSignup.jsx"))
+const DoctorSignup = React.lazy(() =>
+    import("./Components/Signup/DoctorSignup.jsx")
+);
 const Login = React.lazy(() => import("./Components/Login/Login.jsx"));
 const Signup = React.lazy(() => import("./Components/Signup/Signup.jsx"));
 const Pharmacy = React.lazy(() => import("./Components/Pharmacy/Pharmacy.jsx"));
@@ -107,7 +110,8 @@ const router = createBrowserRouter([
             {
                 path: "doctor-finder",
                 element: <Doctors />,
-            }, {
+            },
+            {
                 path: "settings",
                 element: <Settings />,
             },
@@ -120,8 +124,6 @@ const router = createBrowserRouter([
         element: <NotFound />,
     },
 ]);
-
-
 
 function App() {
     return (
@@ -143,6 +145,8 @@ function App() {
                         },
                     }}
                 />
+                {/* Add Chatbot component here */}
+                <Chatbot />
                 <RouterProvider router={router} />
             </React.Suspense>
         </AuthContextProvider>

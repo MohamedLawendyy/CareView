@@ -24,7 +24,7 @@ const MainLayout = () => {
                     isSidebarOpen ? "ml-64" : "ml-20"
                 }`}
             >
-                <div className="w-full max-w-[1800px] mx-auto">
+                <div className="w-full max-w-full mx-auto">
                     <Outlet></Outlet>
                 </div>
             </main>
