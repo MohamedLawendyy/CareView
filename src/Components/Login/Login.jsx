@@ -54,7 +54,7 @@ export default function Login() {
                     }
                 );
 
-                console.log("Login successful!", response.data);
+                console.log("Login successful!");
                 toast.success("Logged in successfully", {
                     position: "bottom-right",
                     duration: 2000,
