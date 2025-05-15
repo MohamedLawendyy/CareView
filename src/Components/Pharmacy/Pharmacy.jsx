@@ -14,144 +14,111 @@ export default function Pharmacy() {
     const [cart, setCart] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [showCart, setShowCart] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState("all");
+    const [sortOption, setSortOption] = useState("name-asc");
+    const [pagination, setPagination] = useState({
+        pageIndex: 1,
+        pageSize: 10,
+        totalCount: 0,
+    });
+
+    const fetchProducts = async (
+        pageIndex = 1,
+        pageSize = pagination.pageSize
+    ) => {
+        try {
+            setLoading(true);
+            const response = await fetch(
+                `https://careview.runasp.net/api/Products/GetAllProducts?PageSize=${pageSize}&PageIndex=${pageIndex}`
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            setProducts(data);
+            setFilteredProducts(data);
+            setPagination((prev) => ({
+                ...prev,
+                pageIndex,
+                pageSize,
+                totalCount: data.length * pageIndex, // This is a temporary approximation
+            }));
+        } catch (err) {
+            setError(err.message);
+            console.error("Error fetching products:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                setLoading(true);
-                const response = await fetch(
-                    "https://careview.runasp.net/api/Products/GetAllProducts"
-                );
-                if (!response.ok) throw new Error("Failed to fetch products");
-                const data = await response.json();
-                setProducts(data);
-                // setFilteredProducts(data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-                // static response
-                // setFilteredProducts([
-                //     {
-                //         "id": 1,
-                //         "name": "Night Cream",
-                //         "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-                //         "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
-                //         "price": 200,
-                //         "stockQuantity": 5
-                //     },
-                //     {
-                //         "id": 2,
-                //         "name": "Hand Cream",
-                //         "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-                //         "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
-                //         "price": 200,
-                //         "stockQuantity": 3
-                //     },
-                //     {
-                //         "id": 3,
-                //         "name": "UnderEye Cream",
-                //         "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-                //         "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
-                //         "price": 200,
-                //         "stockQuantity": 5
-                //     },
-                //     {
-                //         "id": 4,
-                //         "name": "SunScreen",
-                //         "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-                //         "imageUrl": "https://localhost:7290/images/products/sb-ang1.jpeg",
-                //         "price": 300,
-                //         "stockQuantity": 5
-                //     },
-                //     {
-                //         "id": 5,
-                //         "name": "Hair Serum",
-                //         "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-                //         "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
-                //         "price": 200,
-                //         "stockQuantity": 5
-                //     },
-                //     {
-                //         "id": 6,
-                //         "name": "BodyLotion",
-                //         "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-                //         "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
-                //         "price": 900,
-                //         "stockQuantity": 9
-                //     },
-                //     {
-                //         "id": 7,
-                //         "name": "Motinorm",
-                //         "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-                //         "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
-                //         "price": 200,
-                //         "stockQuantity": 5
-                //     },
-                //     {
-                //         "id": 8,
-                //         "name": "Zisrocin",
-                //         "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-                //         "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
-                //         "price": 100,
-                //         "stockQuantity": 1
-                //     },
-                //     {
-                //         "id": 9,
-                //         "name": "Vonaspire",
-                //         "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-                //         "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
-                //         "price": 200,
-                //         "stockQuantity": 5
-                //     },
-                //     {
-                //         "id": 10,
-                //         "name": "Pandol Extra",
-                //         "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-                //         "imageUrl": "https://localhost:7290/images/products/sb-ang1.png",
-                //         "price": 200,
-                //         "stockQuantity": 7
-                //     }
-                // ]);
-            }
-        };
         fetchProducts();
     }, []);
 
     useEffect(() => {
-        let filtered = products;
+        let filtered = [...products];
 
+        // Apply search filter
         if (searchTerm.trim() !== "") {
             filtered = filtered.filter(
                 (product) =>
                     product.name
                         .toLowerCase()
                         .includes(searchTerm.toLowerCase()) ||
-                    product.description
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase())
+                    (product.description &&
+                        product.description
+                            .toLowerCase()
+                            .includes(searchTerm.toLowerCase()))
             );
         }
 
-        if (selectedCategory !== "all") {
-            filtered = filtered.filter(
-                (product) =>
-                    product.category &&
-                    product.category.toLowerCase() ===
-                        selectedCategory.toLowerCase()
-            );
-        }
+        // Apply sorting
+        filtered = sortProducts(filtered, sortOption);
 
         setFilteredProducts(filtered);
-    }, [searchTerm, products, selectedCategory]);
+    }, [searchTerm, products, sortOption]);
+
+    const sortProducts = (products, option) => {
+        const [field, order] = option.split("-");
+        return [...products].sort((a, b) => {
+            // Handle missing fields
+            if (!a[field] || !b[field]) return 0;
+
+            if (field === "price") {
+                return order === "asc" ? a.price - b.price : b.price - a.price;
+            } else {
+                const aValue = a[field].toString().toLowerCase();
+                const bValue = b[field].toString().toLowerCase();
+                return order === "asc"
+                    ? aValue.localeCompare(bValue)
+                    : bValue.localeCompare(aValue);
+            }
+        });
+    };
+
+    const handlePageChange = (newPage) => {
+        if (newPage < 1) return;
+        fetchProducts(newPage, pagination.pageSize);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    const handlePageSizeChange = (newSize) => {
+        const newPageSize = Number(newSize);
+        setPagination((prev) => ({
+            ...prev,
+            pageSize: newPageSize,
+            pageIndex: 1,
+        }));
+        fetchProducts(1, newPageSize);
+    };
 
     const addToCart = (product, quantity) => {
         setCart((prevCart) => {
             const existingItem = prevCart.find(
                 (item) => item.id === product.id
             );
-
             if (existingItem) {
                 return prevCart.map((item) =>
                     item.id === product.id
@@ -159,7 +126,6 @@ export default function Pharmacy() {
                         : item
                 );
             }
-
             return [...prevCart, { ...product, quantity }];
         });
     };
@@ -173,7 +139,6 @@ export default function Pharmacy() {
             removeFromCart(productId);
             return;
         }
-
         setCart(
             cart.map((item) =>
                 item.id === productId
@@ -182,15 +147,6 @@ export default function Pharmacy() {
             )
         );
     };
-
-    const categories = [
-        "all",
-        ...new Set(
-            products
-                .map((product) => product.category)
-                .filter((category) => typeof category === "string")
-        ),
-    ];
 
     return (
         <div
@@ -206,7 +162,7 @@ export default function Pharmacy() {
             {/* Fixed Cart Button */}
             <div className="fixed top-4 right-4 z-50">
                 <button
-                    className="relative bg-primary hover:bg-primary-dark p-4 rounded-full shadow-lg transition-colors duration-200 hover:scale-105"
+                    className="relative bg-primary hover:bg-primary-dark p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-105"
                     onClick={() => setShowCart(true)}
                     aria-label="Shopping Cart"
                 >
@@ -230,141 +186,205 @@ export default function Pharmacy() {
                     Pharmacy Products
                 </h1>
 
-                {/* Search and Filter Section */}
+                {/* Search, Sort, and Page Size Controls */}
                 <div className="mb-8 bg-primary p-4 rounded-lg shadow-md">
                     <div className="flex flex-col sm:flex-row gap-4">
                         {/* Search Input */}
                         <div className="flex-1">
                             <input
                                 type="text"
-                                placeholder="Search products by name or description..."
-                                className="w-full p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-third bg-white/60 focus:bg-white/80"
+                                placeholder="Search products..."
+                                className="w-full p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-third bg-white/60 focus:bg-white/80 transition-all duration-300"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
 
-                        {/* Category Filter */}
-                        <div className="w-full sm:w-64">
+                        {/* Sort Dropdown */}
+                        <div className="w-full sm:w-48">
                             <select
-                                className="w-full p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-third bg-white/60 focus:bg-white/80"
-                                value={selectedCategory}
-                                onChange={(e) =>
-                                    setSelectedCategory(e.target.value)
-                                }
+                                className="w-full p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-third bg-white/60 focus:bg-white/80 transition-all duration-300"
+                                value={sortOption}
+                                onChange={(e) => setSortOption(e.target.value)}
                             >
-                                {categories.map((category) => (
-                                    <option key={category} value={category}>
-                                        {category.charAt(0).toUpperCase() +
-                                            category.slice(1).toLowerCase()}
-                                    </option>
-                                ))}
+                                <option value="name-asc">Name (A-Z)</option>
+                                <option value="name-desc">Name (Z-A)</option>
+                                <option value="price-asc">
+                                    Price (Low to High)
+                                </option>
+                                <option value="price-desc">
+                                    Price (High to Low)
+                                </option>
+                            </select>
+                        </div>
+
+                        {/* Items per page selector */}
+                        <div className="w-full sm:w-40">
+                            <select
+                                value={pagination.pageSize}
+                                onChange={(e) =>
+                                    handlePageSizeChange(e.target.value)
+                                }
+                                className="w-full p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-third bg-white/60 focus:bg-white/80 transition-all duration-300"
+                            >
+                                <option value="5">5 per page</option>
+                                <option value="10">10 per page</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
                 {/* Error Message */}
-                {/* {error && (
+                {error && (
                     <Message
                         severity="error"
                         text={error}
                         onClose={() => setError(null)}
                     />
-                )} */}
+                )}
 
                 {/* Loading State */}
                 {loading ? (
                     <div className="text-center py-12">
-                        <Icon
-                            icon="eos-icons:loading"
-                            className="text-4xl text-primary animate-spin mx-auto"
-                        />
-                        <p className="text-gray-600 mt-2">
-                            Loading products...
-                        </p>
+                        <div className="inline-flex items-center">
+                            <Icon
+                                icon="eos-icons:loading"
+                                className="text-4xl text-primary animate-spin mr-2"
+                            />
+                            <span>Loading products...</span>
+                        </div>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                        {filteredProducts.length > 0 ? (
-                            filteredProducts.map((product) => (
-                                <ProductCard
-                                    key={product.id}
-                                    product={product}
-                                    onAddToCart={addToCart}
-                                    defaultImage={DefaultProductImage}
-                                />
-                            ))
-                        ) : (
-                            <div className="col-span-full text-center py-12">
-                                <Icon
-                                    icon="mdi:package-variant-remove"
-                                    className="text-5xl text-gray-400 mx-auto mb-3"
-                                />
-                                <p className="text-gray-500 text-lg">
-                                    {searchTerm
-                                        ? `No products found matching "${searchTerm}"`
-                                        : "No products available in this category"}
-                                </p>
+                    <>
+                        {/* Products Grid */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                            {filteredProducts.length > 0 ? (
+                                filteredProducts.map((product) => (
+                                    <ProductCard
+                                        key={product.id}
+                                        product={product}
+                                        onAddToCart={addToCart}
+                                        defaultImage={DefaultProductImage}
+                                    />
+                                ))
+                            ) : (
+                                <div className="col-span-full text-center py-12">
+                                    <Icon
+                                        icon="mdi:package-variant-remove"
+                                        className="text-5xl text-gray-400 mx-auto mb-3"
+                                    />
+                                    <p className="text-gray-500 text-lg">
+                                        {searchTerm
+                                            ? `No products found matching "${searchTerm}"`
+                                            : "No products available"}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Enhanced Pagination */}
+                        {filteredProducts.length > 0 && (
+                            <div className="flex flex-col sm:flex-row items-center justify-between pt-8 gap-4">
+                                <div className="text-sm text-gray-600">
+                                    Showing{" "}
+                                    {(pagination.pageIndex - 1) *
+                                        pagination.pageSize +
+                                        1}
+                                    -
+                                    {Math.min(
+                                        pagination.pageIndex *
+                                            pagination.pageSize,
+                                        (pagination.pageIndex - 1) *
+                                            pagination.pageSize +
+                                            filteredProducts.length
+                                    )}{" "}
+                                    items
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={() =>
+                                            handlePageChange(
+                                                pagination.pageIndex - 1
+                                            )
+                                        }
+                                        disabled={pagination.pageIndex === 1}
+                                        className={`flex items-center justify-center px-4 h-10 rounded-lg transition-all duration-300 ${
+                                            pagination.pageIndex === 1
+                                                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                                                : "text-white bg-secondary hover:bg-secondary-dark hover:shadow-md"
+                                        }`}
+                                    >
+                                        <Icon
+                                            icon="mdi:chevron-left"
+                                            className="text-xl"
+                                        />
+                                        <span className="ml-1">Previous</span>
+                                    </button>
+
+                                    <div className="flex items-center gap-1">
+                                        {pagination.pageIndex > 1 && (
+                                            <button
+                                                onClick={() =>
+                                                    handlePageChange(
+                                                        pagination.pageIndex - 1
+                                                    )
+                                                }
+                                                className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-secondary transition-colors"
+                                            >
+                                                {pagination.pageIndex - 1}
+                                            </button>
+                                        )}
+
+                                        <button className="w-10 h-10 flex items-center justify-center bg-secondary text-white rounded-lg scale-105 transform transition-transform">
+                                            {pagination.pageIndex}
+                                        </button>
+
+                                        {filteredProducts.length >=
+                                            pagination.pageSize && (
+                                            <button
+                                                onClick={() =>
+                                                    handlePageChange(
+                                                        pagination.pageIndex + 1
+                                                    )
+                                                }
+                                                className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-secondary transition-colors"
+                                            >
+                                                {pagination.pageIndex + 1}
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    <button
+                                        onClick={() =>
+                                            handlePageChange(
+                                                pagination.pageIndex + 1
+                                            )
+                                        }
+                                        disabled={
+                                            filteredProducts.length <
+                                            pagination.pageSize
+                                        }
+                                        className={`flex items-center justify-center px-4 h-10 rounded-lg transition-all duration-300 ${
+                                            filteredProducts.length <
+                                            pagination.pageSize
+                                                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                                                : "text-white bg-secondary hover:bg-secondary-dark hover:shadow-md"
+                                        }`}
+                                    >
+                                        <span className="mr-1">Next</span>
+                                        <Icon
+                                            icon="mdi:chevron-right"
+                                            className="text-xl"
+                                        />
+                                    </button>
+                                </div>
                             </div>
                         )}
-                    </div>
+                    </>
                 )}
             </div>
 
-            {/* Pagination buttons */}
-            {filteredProducts.length > 0 && (
-                <div>
-                    <div className="flex items-center justify-center pt-8">
-                        {/* Previous Button */}
-                        <a
-                            href="#"
-                            className="flex items-center justify-center px-4 h-10 me-3 text-base font-medium text-bg bg-secondary border border-bg  rounded-lg hover:bg-third/80 hover:text-bg hover:border-third/80 dark:bg-third dark:border-bg dark:text-bg dark:hover:bg-secondary dark:hover:text-bg"
-                        >
-                            <svg
-                                className="w-3.5 h-3.5 me-2 rtl:rotate-180"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 14 10"
-                            >
-                                <path
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M13 5H1m0 0 4 4M1 5l4-4"
-                                />
-                            </svg>
-                            Previous
-                        </a>
-
-                        {/* Next Button */}
-                        <a
-                            href="#"
-                            className="flex items-center justify-center px-4 h-10 text-base font-medium text-bg bg-secondary border border-bg  rounded-lg hover:bg-third/80 hover:text-bg hover:border-third/80 dark:bg-third dark:border-bg dark:text-bg dark:hover:bg-secondary dark:hover:text-bg"
-                        >
-                            Next
-                            <svg
-                                className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 14 10"
-                            >
-                                <path
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M1 5h12m0 0L9 1m4 4L9 9"
-                                />
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            )}
-            
             {/* Cart Modal */}
             {showCart && (
                 <CartModal
