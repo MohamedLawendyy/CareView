@@ -1,14 +1,15 @@
-// src/App.jsx
 import React from "react";
 import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import "sweetalert2"; // Add SweetAlert2 styles
 import AuthContextProvider from "./Context/AuthContext";
 import MainLayout from "./Components/Layout/MainLayout.jsx";
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute.jsx";
 import Doctors from "./Components/DoctorFinder/Doctors.jsx";
-import Chatbot from "./Components/Chatbot/Chatbot.jsx"; // Import the Chatbot component
+import Chatbot from "./Components/Chatbot/Chatbot.jsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // Lazy-loaded components
 const DoctorSignup = React.lazy(() =>
@@ -34,11 +35,14 @@ const MyDiagnoses = React.lazy(() =>
 const PostTreatment = React.lazy(() =>
     import("./Components/PostTreatment/PostTreatment.jsx")
 );
-const HelpSupport = React.lazy(() =>
-    import("./Components/HelpSupport/HelpSupport.jsx")
+const Chats = React.lazy(() =>
+    import("./Components/Chats/Chats.jsx")
 );
-const Settings = React.lazy(() => import("./Components/Settings/Settings.jsx"));
+const History = React.lazy(() => import("./Components/History/History.jsx"));
 const NotFound = React.lazy(() => import("./Components/NotFound/NotFound.jsx"));
+const SuccessPage = React.lazy(() =>
+    import("./Components/SuccessPage/SuccessPage.jsx")
+);
 
 // Router setup with lazy-loaded components
 const router = createBrowserRouter([
@@ -70,6 +74,10 @@ const router = createBrowserRouter([
     {
         path: "/resetpassword",
         element: <ResetPassword />,
+    },
+    {
+        path: "/checkout/success",
+        element: <SuccessPage />,
     },
 
     // Protected routes with sidebar
@@ -104,16 +112,16 @@ const router = createBrowserRouter([
                 element: <PostTreatment />,
             },
             {
-                path: "help-support",
-                element: <HelpSupport />,
+                path: "chats",
+                element: <Chats />,
             },
             {
                 path: "doctor-finder",
                 element: <Doctors />,
             },
             {
-                path: "settings",
-                element: <Settings />,
+                path: "history",
+                element: <History />,
             },
         ],
     },
@@ -125,31 +133,34 @@ const router = createBrowserRouter([
     },
 ]);
 
+let query = new QueryClient();
+
 function App() {
     return (
-        <AuthContextProvider>
-            <React.Suspense
-                fallback={
-                    <div className="flex items-center justify-center h-screen">
-                        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
-                    </div>
-                }
-            >
-                <Toaster
-                    position="top-right"
-                    toastOptions={{
-                        duration: 3000,
-                        style: {
-                            background: "#363636",
-                            color: "#fff",
-                        },
-                    }}
-                />
-                {/* Add Chatbot component here */}
-                <Chatbot />
-                <RouterProvider router={router} />
-            </React.Suspense>
-        </AuthContextProvider>
+        <QueryClientProvider client={query}>
+            <AuthContextProvider>
+                <React.Suspense
+                    fallback={
+                        <div className="flex items-center justify-center h-screen">
+                            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
+                        </div>
+                    }
+                >
+                    <Toaster
+                        position="top-right"
+                        toastOptions={{
+                            duration: 3000,
+                            style: {
+                                background: "#363636",
+                                color: "#fff",
+                            },
+                        }}
+                    />
+                    <Chatbot />
+                    <RouterProvider router={router} />
+                </React.Suspense>
+            </AuthContextProvider>
+        </QueryClientProvider>
     );
 }
 

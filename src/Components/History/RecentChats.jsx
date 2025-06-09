@@ -10,8 +10,8 @@ export default function RecentChats({
     unreadCount,
 }) {
     return (
-        <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-            <div className="p-6">
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:border-primary transition-all duration-300">
+            <div className="p-5">
                 <div className="flex items-start mb-4">
                     <div className="bg-green-100 p-3 rounded-full mr-4">
                         <Icon

@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import ProductCard from "../ProductCard/ProductCard";
 import Message from "../Message/Message.jsx";
 import SectionBG from "../../assets/images/SectionBG.svg";
 import DefaultProductImage from "../../assets/images/panadolColdFlu.jpeg";
 import CartModal from "../CartModal/CartModal.jsx";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 export default function Pharmacy() {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [cart, setCart] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [showCart, setShowCart] = useState(false);
     const [sortOption, setSortOption] = useState("name-asc");
@@ -20,6 +22,15 @@ export default function Pharmacy() {
         pageSize: 10,
         totalCount: 0,
     });
+    const [cartItemsCount, setCartItemsCount] = useState(0);
+
+    const token = localStorage.getItem("userToken");
+
+    const authAxios = axios.create({
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
 
     const fetchProducts = async (
         pageIndex = 1,
@@ -27,26 +38,24 @@ export default function Pharmacy() {
     ) => {
         try {
             setLoading(true);
-            const response = await fetch(
+            const response = await axios.get(
                 `https://careview.runasp.net/api/Products/GetAllProducts?PageSize=${pageSize}&PageIndex=${pageIndex}`
             );
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            setProducts(data);
-            setFilteredProducts(data);
+            setProducts(response.data);
+            setFilteredProducts(response.data);
             setPagination((prev) => ({
                 ...prev,
                 pageIndex,
                 pageSize,
-                totalCount: data.length * pageIndex, // This is a temporary approximation
+                totalCount: response.data.length * pageIndex,
             }));
         } catch (err) {
-            setError(err.message);
+            if (err.response?.status === 401) {
+                setError("Please login to access this page");
+            } else {
+                setError(err.message);
+            }
             console.error("Error fetching products:", err);
         } finally {
             setLoading(false);
@@ -60,7 +69,6 @@ export default function Pharmacy() {
     useEffect(() => {
         let filtered = [...products];
 
-        // Apply search filter
         if (searchTerm.trim() !== "") {
             filtered = filtered.filter(
                 (product) =>
@@ -74,16 +82,13 @@ export default function Pharmacy() {
             );
         }
 
-        // Apply sorting
         filtered = sortProducts(filtered, sortOption);
-
         setFilteredProducts(filtered);
     }, [searchTerm, products, sortOption]);
 
     const sortProducts = (products, option) => {
         const [field, order] = option.split("-");
         return [...products].sort((a, b) => {
-            // Handle missing fields
             if (!a[field] || !b[field]) return 0;
 
             if (field === "price") {
@@ -98,59 +103,77 @@ export default function Pharmacy() {
         });
     };
 
+    const addToCart = async (product, quantity) => {
+        try {
+            await authAxios.post(
+                `https://careview.runasp.net/api/cart/add?productId=${product.id}&quantity=${quantity}`
+            );
+            return true;
+        } catch (error) {
+            if (error.response?.status === 401) {
+                Swal.fire({
+                    title: "Login Required",
+                    text: "Please login to add items to cart",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+            } else {
+                console.error("Error adding to cart:", error);
+            }
+            return false;
+        }
+    };
+
+    const removeFromCart = async (itemId) => {
+        try {
+            await authAxios.delete(
+                `https://careview.runasp.net/api/cart/remove-product?itemId=${itemId}`
+            );
+        } catch (error) {
+            console.error("Error removing from cart:", error);
+        }
+    };
+
+    const updateCartItem = async (productId, newQuantity) => {
+        try {
+            await authAxios.post(
+                `https://careview.runasp.net/api/cart/add?productId=${productId}&quantity=${newQuantity}`
+            );
+        } catch (error) {
+            console.error("Error updating cart item:", error);
+        }
+    };
+
+    const handleCheckout = async () => {
+        try {
+            const response = await authAxios.post(
+                "https://careview.runasp.net/api/cart/Pay"
+            );
+            window.location.href = response.data.url;
+        } catch (error) {
+            console.error("Error during checkout:", error);
+            Swal.fire({
+                title: "Payment Failed",
+                text:
+                    error.response?.data?.message || "Please try again later.",
+                icon: "error",
+                confirmButtonColor: "#d33",
+                confirmButtonText: "OK",
+            });
+        }
+    };
+
     const handlePageChange = (newPage) => {
-        if (newPage < 1) return;
         fetchProducts(newPage, pagination.pageSize);
-        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     const handlePageSizeChange = (newSize) => {
-        const newPageSize = Number(newSize);
-        setPagination((prev) => ({
-            ...prev,
-            pageSize: newPageSize,
-            pageIndex: 1,
-        }));
-        fetchProducts(1, newPageSize);
-    };
-
-    const addToCart = (product, quantity) => {
-        setCart((prevCart) => {
-            const existingItem = prevCart.find(
-                (item) => item.id === product.id
-            );
-            if (existingItem) {
-                return prevCart.map((item) =>
-                    item.id === product.id
-                        ? { ...item, quantity: item.quantity + quantity }
-                        : item
-                );
-            }
-            return [...prevCart, { ...product, quantity }];
-        });
-    };
-
-    const removeFromCart = (productId) => {
-        setCart(cart.filter((item) => item.id !== productId));
-    };
-
-    const updateCartItem = (productId, newQuantity) => {
-        if (newQuantity < 1) {
-            removeFromCart(productId);
-            return;
-        }
-        setCart(
-            cart.map((item) =>
-                item.id === productId
-                    ? { ...item, quantity: newQuantity }
-                    : item
-            )
-        );
+        fetchProducts(1, newSize);
     };
 
     return (
         <div
-            className="relative min-h-screen py-16"
+            className="relative min-h-screen container mx-auto px-4 py-8 max-w-8xl"
             style={{
                 backgroundImage: `url(${SectionBG})`,
                 backgroundSize: "contain",
@@ -159,7 +182,6 @@ export default function Pharmacy() {
                 backgroundRepeat: "repeat",
             }}
         >
-            {/* Fixed Cart Button */}
             <div className="fixed top-4 right-4 z-50">
                 <button
                     className="relative bg-primary hover:bg-primary-dark p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-105"
@@ -170,12 +192,9 @@ export default function Pharmacy() {
                         icon="solar:cart-bold"
                         className="text-2xl text-third"
                     />
-                    {cart.length > 0 && (
+                    {cartItemsCount > 0 && (
                         <span className="absolute -top-1 -right-1 text-xs text-white font-bold bg-red-600 rounded-full w-5 h-5 flex items-center justify-center">
-                            {cart.reduce(
-                                (total, item) => total + item.quantity,
-                                0
-                            )}
+                            {cartItemsCount}
                         </span>
                     )}
                 </button>
@@ -186,10 +205,20 @@ export default function Pharmacy() {
                     Pharmacy Products
                 </h1>
 
-                {/* Search, Sort, and Page Size Controls */}
+                {error && error.includes("login") && (
+                    <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
+                        <p>{error}</p>
+                        <button
+                            onClick={() => (window.location.href = "/login")}
+                            className="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                        >
+                            Go to Login
+                        </button>
+                    </div>
+                )}
+
                 <div className="mb-8 bg-primary p-4 rounded-lg shadow-md">
                     <div className="flex flex-col sm:flex-row gap-4">
-                        {/* Search Input */}
                         <div className="flex-1">
                             <input
                                 type="text"
@@ -200,7 +229,6 @@ export default function Pharmacy() {
                             />
                         </div>
 
-                        {/* Sort Dropdown */}
                         <div className="w-full sm:w-48">
                             <select
                                 className="w-full p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-third bg-white/60 focus:bg-white/80 transition-all duration-300"
@@ -218,7 +246,6 @@ export default function Pharmacy() {
                             </select>
                         </div>
 
-                        {/* Items per page selector */}
                         <div className="w-full sm:w-40">
                             <select
                                 value={pagination.pageSize}
@@ -229,21 +256,12 @@ export default function Pharmacy() {
                             >
                                 <option value="5">5 per page</option>
                                 <option value="10">10 per page</option>
+                                <option value="20">20 per page</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
-                {/* Error Message */}
-                {error && (
-                    <Message
-                        severity="error"
-                        text={error}
-                        onClose={() => setError(null)}
-                    />
-                )}
-
-                {/* Loading State */}
                 {loading ? (
                     <div className="text-center py-12">
                         <div className="inline-flex items-center">
@@ -256,7 +274,6 @@ export default function Pharmacy() {
                     </div>
                 ) : (
                     <>
-                        {/* Products Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                             {filteredProducts.length > 0 ? (
                                 filteredProducts.map((product) => (
@@ -282,7 +299,6 @@ export default function Pharmacy() {
                             )}
                         </div>
 
-                        {/* Enhanced Pagination */}
                         {filteredProducts.length > 0 && (
                             <div className="flex flex-col sm:flex-row items-center justify-between pt-8 gap-4">
                                 <div className="text-sm text-gray-600">
@@ -385,13 +401,13 @@ export default function Pharmacy() {
                 )}
             </div>
 
-            {/* Cart Modal */}
             {showCart && (
                 <CartModal
-                    cartItems={cart}
                     onClose={() => setShowCart(false)}
                     onRemove={removeFromCart}
                     onUpdate={updateCartItem}
+                    onCheckout={handleCheckout}
+                    setCartItemsCount={setCartItemsCount}
                 />
             )}
         </div>

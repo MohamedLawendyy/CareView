@@ -14,11 +14,11 @@ export default function UserSidebar({ isSidebarOpen, toggleSidebar }) {
     const navItems = [
         { name: "Home", icon: "tabler:home-filled", path: "/home" },
         { name: "My Diagnoses", icon: "tabler:clipboard-text-filled", path: "/my-diagnoses" },
-        { name: "Doctor finder", icon: "tabler:clipboard-text-filled", path: "/doctor-finder" },
+        { name: "Doctor finder", icon: "fluent:doctor-24-filled", path: "/doctor-finder" },
         { name: "Pharmacy", icon: "healthicons:pharmacy-24px", path: "/pharmacy" },
         { name: "Post Treatment", icon: "ic:baseline-monitor-heart", path: "/post-treatment" },
-        { name: "Help & Support", icon: "mdi:help-circle", path: "/help-support" },
-        { name: "Settings", icon: "mdi:cog", path: "/settings" },
+        { name: "Chats", icon: "fluent:chat-12-filled", path: "/chats" },
+        { name: "History", icon: "iconamoon:history-duotone", path: "/history" },
     ];
 
     const bottomItems = [

@@ -1,33 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 export default function ProductCard({ product, onAddToCart, defaultImage }) {
     const [quantity, setQuantity] = useState(1);
-
     const [isHovered, setIsHovered] = useState(false);
     const [isAdded, setIsAdded] = useState(false);
-    const [isOutOfStock, setIsOutOfStock] = useState(product.stockQuantity === 0);
+    const [isOutOfStock, setIsOutOfStock] = useState(
+        product.stockQuantity === 0
+    );
+    const [currentStock, setCurrentStock] = useState(product.stockQuantity);
+
+    const token = localStorage.getItem("userToken");
+
+    const authAxios = axios.create({
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
 
     const handleAddToCart = async () => {
         try {
-            // Use the existing GET product by ID endpoint
-            const response = await fetch(`https://careview.runasp.net/api/Products/${product.id}`);
+            const response = await authAxios.get(
+                `https://careview.runasp.net/api/Products/${product.id}`
+            );
+            const currentProduct = response.data;
+            const updatedStock = currentProduct.stockQuantity;
+            setCurrentStock(updatedStock);
 
-            if (!response.ok) throw new Error('Failed to fetch product');
-
-            const currentProduct = await response.json();
-            const currentStock = currentProduct.stockQuantity;
-
-            if (currentStock === 0) {
+            if (updatedStock === 0) {
                 setIsOutOfStock(true);
                 toast.error("This product is now out of stock");
                 return;
             }
 
-            if (quantity > currentStock) {
-                toast.error(`Only ${currentStock} items available`);
+            if (quantity > updatedStock) {
+                toast.error(`Only ${updatedStock} items available`);
                 return;
             }
 
@@ -38,55 +48,59 @@ export default function ProductCard({ product, onAddToCart, defaultImage }) {
                 setQuantity(1);
                 setTimeout(() => setIsAdded(false), 2000);
 
-                if (currentStock - quantity === 0) {
+                if (updatedStock - quantity === 0) {
                     setIsOutOfStock(true);
                 }
             }
         } catch (error) {
-            toast.error("Failed to check availability");
-            console.error("Error:", error);
+            if (error.response?.status === 401) {
+                toast.error("Please login to add items to cart");
+            } else {
+                toast.error("Failed to check availability");
+                console.error("Error:", error);
+            }
         }
     };
 
     const handleQuantityChange = (newQuantity) => {
         if (newQuantity < 1) return;
-        if (product.stockQuantity > 0 && newQuantity > product.stockQuantity) {
-            toast.info(`Maximum available: ${product.stockQuantity}`);
+        if (currentStock > 0 && newQuantity > currentStock) {
+            toast.info(`Maximum available: ${currentStock}`);
             return;
         }
         setQuantity(newQuantity);
     };
 
-    const discountedPrice = product.price - (product.price * (product.discount || 0)) / 100;
+    const discountedPrice =
+        product.price - (product.price * (product.discount || 0)) / 100;
 
     return (
         <div
-            className={`relative bg-primary p-3 sm:p-4 rounded-xl shadow-lg transition-all duration-300 transform ${isHovered ? "-translate-y-1 shadow-xl" : ""
-                }`}
+            className={`relative bg-primary p-3 sm:p-4 rounded-xl shadow-lg transition-all duration-300 transform ${
+                isHovered ? "-translate-y-1 shadow-xl" : ""
+            }`}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            {/* Discount Badge */}
             {product.discount && (
                 <div className="absolute top-0 right-0 bg-red-500 text-white text-xs sm:text-sm font-bold px-2 py-1 rounded-bl-xl z-10">
                     {product.discount}% OFF
                 </div>
             )}
 
-            {/* Product Image */}
             <div className="relative overflow-hidden rounded-lg mb-3 sm:mb-4 aspect-square">
                 <img
                     src={product.imageUrl || defaultImage}
                     alt={product.name}
-                    className={`w-full h-full object-cover rounded-lg transition-transform duration-500 ${isHovered ? "scale-105" : "scale-100"
-                        }`}
+                    className={`w-full h-full object-cover rounded-lg transition-transform duration-500 ${
+                        isHovered ? "scale-105" : "scale-100"
+                    }`}
                     onError={(e) => {
                         e.target.src = defaultImage;
                     }}
                 />
             </div>
 
-            {/* Product Info */}
             <div className="mb-3 sm:mb-4">
                 <h3 className="text-base sm:text-lg md:text-xl font-bold mb-1 sm:mb-2 text-third line-clamp-1">
                     {product.name}
@@ -96,7 +110,6 @@ export default function ProductCard({ product, onAddToCart, defaultImage }) {
                 </p>
             </div>
 
-            {/* Price and Quantity */}
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-3 sm:mb-4">
                 <div className="flex items-center gap-1 sm:gap-2">
                     <span className="text-sm sm:text-base md:text-lg font-bold text-third">
@@ -126,7 +139,7 @@ export default function ProductCard({ product, onAddToCart, defaultImage }) {
                             onClick={() => handleQuantityChange(quantity + 1)}
                             className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-secondary hover:text-third active:scale-90 transition-transform"
                             aria-label="Increase quantity"
-                            disabled={quantity >= product.stockQuantity}
+                            disabled={quantity >= currentStock}
                         >
                             <Icon icon="fluent:add-12-filled" width={16} />
                         </button>
@@ -134,23 +147,22 @@ export default function ProductCard({ product, onAddToCart, defaultImage }) {
                 )}
             </div>
 
-            {/* Stock Quantity Display */}
             <p className="text-xs sm:text-sm text-secondary font-medium mx-2 my-2">
                 {isOutOfStock
                     ? "Out of stock"
-                    : `${product.stockQuantity} items in stock`}
+                    : `${currentStock} items in stock`}
             </p>
 
-            {/* Add to Cart Button - Maintaining original animations */}
             <button
                 onClick={handleAddToCart}
                 disabled={isOutOfStock || isAdded}
-                className={`w-full py-2 sm:py-3 rounded-xl font-medium sm:font-bold text-sm sm:text-base transition-all duration-300 flex items-center justify-center ${isOutOfStock
-                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                    : isAdded
+                className={`w-full py-2 sm:py-3 rounded-xl font-medium sm:font-bold text-sm sm:text-base transition-all duration-300 flex items-center justify-center ${
+                    isOutOfStock
+                        ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                        : isAdded
                         ? "bg-green-500 text-white transform scale-95"
                         : "bg-third text-bg hover:bg-secondary hover:text-white active:scale-95"
-                    }`}
+                }`}
                 aria-label={isOutOfStock ? "Out of stock" : "Add to cart"}
             >
                 {isOutOfStock ? (
