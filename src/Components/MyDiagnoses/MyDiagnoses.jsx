@@ -68,7 +68,7 @@ export default function MyDignoses() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [userRole, setUserRole] = useState(null);
-    const [activeTab, setActiveTab] = useState("sessions");
+    const [activeTab, setActiveTab] = useState("appointments");
     const [sessionsFilter, setSessionsFilter] = useState("all");
     const [appointmentsFilter, setAppointmentsFilter] = useState("all");
 
@@ -375,23 +375,11 @@ export default function MyDignoses() {
             <div className="border-b border-gray-200 mb-8">
                 <nav className="-mb-px flex space-x-8">
                     <button
-                        onClick={() => setActiveTab("sessions")}
-                        className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${
-                            activeTab === "sessions"
-                                ? "border-third text-third font-semibold"
-                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                        }`}
-                    >
-                        <Icon icon="fa6-solid:stethoscope" className="mr-2" />
-                        Sessions
-                    </button>
-                    <button
                         onClick={() => setActiveTab("appointments")}
-                        className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${
-                            activeTab === "appointments"
-                                ? "border-secondary text-secondary font-semibold"
-                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                        }`}
+                        className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "appointments"
+                            ? "border-secondary text-secondary font-semibold"
+                            : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            }`}
                     >
                         <Icon
                             icon="fa6-regular:calendar-check"
@@ -404,79 +392,6 @@ export default function MyDignoses() {
 
             {/* Content based on active tab */}
             <div className="mb-12">
-                {activeTab === "sessions" && (
-                    <>
-                        <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-2xl font-semibold text-gray-800">
-                                {isDoctor ? "Your Sessions" : "My Sessions"}
-                            </h2>
-                            <div className="flex space-x-2">
-                                <button
-                                    onClick={() => setSessionsFilter("all")}
-                                    className={`px-3 py-1 text-sm rounded-md transition-colors ${
-                                        sessionsFilter === "all"
-                                            ? "bg-blue-100 text-blue-700"
-                                            : "bg-gray-100 hover:bg-gray-200"
-                                    }`}
-                                >
-                                    All
-                                </button>
-                                <button
-                                    onClick={() =>
-                                        setSessionsFilter("upcoming")
-                                    }
-                                    className={`px-3 py-1 text-sm rounded-md transition-colors ${
-                                        sessionsFilter === "upcoming"
-                                            ? "bg-blue-100 text-blue-700"
-                                            : "bg-gray-100 hover:bg-gray-200"
-                                    }`}
-                                >
-                                    Upcoming
-                                </button>
-                                <button
-                                    onClick={() =>
-                                        setSessionsFilter("completed")
-                                    }
-                                    className={`px-3 py-1 text-sm rounded-md transition-colors ${
-                                        sessionsFilter === "completed"
-                                            ? "bg-blue-100 text-blue-700"
-                                            : "bg-gray-100 hover:bg-gray-200"
-                                    }`}
-                                >
-                                    Completed
-                                </button>
-                            </div>
-                        </div>
-
-                        {!hasSessions ? (
-                            <div className="bg-white rounded-xl shadow-sm p-8 text-center max-w-2xl mx-auto border border-gray-100">
-                                <Icon
-                                    icon="fa6-solid:calendar-xmark"
-                                    className="w-16 h-16 mx-auto text-gray-400 mb-4"
-                                />
-                                <h3 className="text-xl font-medium text-gray-900 mb-2">
-                                    No sessions found
-                                </h3>
-                                <p className="text-gray-500 mb-6">
-                                    {isDoctor
-                                        ? "You don't have any sessions matching this filter."
-                                        : "You don't have any sessions matching this filter."}
-                                </p>
-                            </div>
-                        ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {filteredSessions.map((session) => (
-                                    <SessionsCard
-                                        key={`session-${session.id}`}
-                                        {...session}
-                                        isDoctorView={isDoctor}
-                                    />
-                                ))}
-                            </div>
-                        )}
-                    </>
-                )}
-
                 {activeTab === "appointments" && (
                     <>
                         <div className="flex justify-between items-center mb-6">
@@ -488,11 +403,10 @@ export default function MyDignoses() {
                             <div className="flex space-x-2">
                                 <button
                                     onClick={() => setAppointmentsFilter("all")}
-                                    className={`px-3 py-1 text-sm rounded-md transition-colors ${
-                                        appointmentsFilter === "all"
-                                            ? "bg-blue-100 text-blue-700"
-                                            : "bg-gray-100 hover:bg-gray-200"
-                                    }`}
+                                    className={`px-3 py-1 text-sm rounded-md transition-colors ${appointmentsFilter === "all"
+                                        ? "bg-blue-100 text-blue-700"
+                                        : "bg-gray-100 hover:bg-gray-200"
+                                        }`}
                                 >
                                     All
                                 </button>
@@ -500,11 +414,10 @@ export default function MyDignoses() {
                                     onClick={() =>
                                         setAppointmentsFilter("upcoming")
                                     }
-                                    className={`px-3 py-1 text-sm rounded-md transition-colors ${
-                                        appointmentsFilter === "upcoming"
-                                            ? "bg-blue-100 text-blue-700"
-                                            : "bg-gray-100 hover:bg-gray-200"
-                                    }`}
+                                    className={`px-3 py-1 text-sm rounded-md transition-colors ${appointmentsFilter === "upcoming"
+                                        ? "bg-blue-100 text-blue-700"
+                                        : "bg-gray-100 hover:bg-gray-200"
+                                        }`}
                                 >
                                     Upcoming
                                 </button>
@@ -512,11 +425,10 @@ export default function MyDignoses() {
                                     onClick={() =>
                                         setAppointmentsFilter("completed")
                                     }
-                                    className={`px-3 py-1 text-sm rounded-md transition-colors ${
-                                        appointmentsFilter === "completed"
-                                            ? "bg-blue-100 text-blue-700"
-                                            : "bg-gray-100 hover:bg-gray-200"
-                                    }`}
+                                    className={`px-3 py-1 text-sm rounded-md transition-colors ${appointmentsFilter === "completed"
+                                        ? "bg-blue-100 text-blue-700"
+                                        : "bg-gray-100 hover:bg-gray-200"
+                                        }`}
                                 >
                                     Completed
                                 </button>
@@ -537,7 +449,7 @@ export default function MyDignoses() {
                                         ? "You don't have any appointments matching this filter."
                                         : "You don't have any appointments matching this filter."}
                                 </p>
-                                
+
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

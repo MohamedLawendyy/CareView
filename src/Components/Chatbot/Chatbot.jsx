@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { useLocation } from "react-router-dom";
 // import axios from 'axios'; // Uncomment when using APIs
 
 const Chatbot = () => {
@@ -32,28 +33,27 @@ const Chatbot = () => {
         scrollToBottom();
     }, [messages]);
 
-    /* 
+
     // UNCOMMENT THIS WHEN USING API
-    const fetchBotResponse = async (userMessage) => {
+    async function SendMessage(userMessage) {
         try {
-            const response = await axios.post('https://your-dotnet-api-endpoint.com/api/chatbot', {
+            const response = await axios.post('https://careview.runasp.net/api/Chat/ask-bot', {
                 message: userMessage,
-                // Include any additional context if needed
             }, {
                 headers: {
                     'Content-Type': 'application/json',
-                    // Add authentication headers if required
+                    'Authorization': `Bearer ${localStorage.getItem('userToken')}`
                 }
             });
-            return response.data.response;
+            return response.data.bot_response;
         } catch (error) {
             console.error('Error fetching bot response:', error);
             return "Sorry, I'm having trouble connecting to the server. Please try again later.";
         }
     };
-    */
 
-    const handleSend = () => {
+
+    async function handleSend() {
         if (inputValue.trim()) {
             // Add user message immediately
             const newMessage = { text: inputValue, sender: "user" };
@@ -61,32 +61,19 @@ const Chatbot = () => {
             setInputValue("");
             setIsBotTyping(true);
 
-            /* 
-            // UNCOMMENT THIS WHEN USING API
-            fetchBotResponse(inputValue).then(botResponse => {
+            // Send user message to API
+            SendMessage(inputValue).then(botResponse => {
                 setMessages(prev => [...prev, { text: botResponse, sender: "bot" }]);
                 setIsBotTyping(false);
             }).catch(error => {
-                setMessages(prev => [...prev, { 
-                    text: "Sorry, I encountered an error. Please try again.", 
-                    sender: "bot" 
+                setMessages(prev => [...prev, {
+                    text: "Sorry, I encountered an error. Please try again.",
+                    sender: "bot"
                 }]);
                 setIsBotTyping(false);
             });
-            */
 
-            // COMMENT THIS DOWN CODE WHEN USING API
-            setTimeout(() => {
-                setMessages((prev) => [
-                    ...prev,
-                    {
-                        text: "Thanks for your message! How else can I help?",
-                        sender: "bot",
-                    },
-                ]);
-                setIsBotTyping(false);
-            }, 1500);
-            // COMMENT THIS ABOVE CODE WHEN USING API
+
         }
     };
 
@@ -94,10 +81,15 @@ const Chatbot = () => {
         if (e.key === "Enter") handleSend();
     };
 
+
+
+
+
+
     return (
         <>
             {isOpen && (
-                <div className="fixed bottom-32 right-6 z-40 w-96 h-[32rem] bg-white rounded-lg shadow-xl overflow-hidden flex flex-col border border-gray-200">
+                <div className="fixed bottom-24 right-6 z-40 w-96 h-[32rem] bg-white rounded-lg shadow-xl overflow-hidden flex flex-col border border-gray-200">
                     {/* Header */}
                     <div className="bg-third text-white p-4 flex justify-between items-center">
                         <h2 className="font-bold">CareView Assistant</h2>
@@ -122,18 +114,16 @@ const Chatbot = () => {
                             {messages.map((message, index) => (
                                 <div
                                     key={index}
-                                    className={`flex ${
-                                        message.sender === "user"
-                                            ? "justify-end"
-                                            : "justify-start"
-                                    }`}
+                                    className={`flex ${message.sender === "user"
+                                        ? "justify-end"
+                                        : "justify-start"
+                                        }`}
                                 >
                                     <p
-                                        className={`p-3 rounded-lg max-w-[80%] ${
-                                            message.sender === "user"
-                                                ? "bg-third text-white"
-                                                : "bg-gray-200"
-                                        }`}
+                                        className={`p-3 rounded-lg max-w-[80%] ${message.sender === "user"
+                                            ? "bg-third text-white"
+                                            : "bg-gray-200"
+                                            }`}
                                     >
                                         {message.text}
                                     </p>
@@ -170,7 +160,7 @@ const Chatbot = () => {
                                 className="flex-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-third"
                             />
                             <button
-                                onClick={handleSend}
+                                onClick={() => handleSend()}
                                 disabled={isBotTyping}
                                 className="bg-third hover:bg-secondary text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
                             >
@@ -186,9 +176,8 @@ const Chatbot = () => {
             )}
             <button
                 onClick={toggleChatbot}
-                className={`fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-third text-white shadow-lg hover:bg-secondary transition-all duration-300 flex items-center justify-center ${
-                    isOpen ? "transform rotate-45" : ""
-                }`}
+                className={`fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-third text-white shadow-lg hover:bg-secondary transition-all duration-300 flex items-center justify-center ${isOpen ? "transform rotate-45" : ""
+                    }`}
             >
                 <Icon icon="mingcute:ai-fill" width="32" height="32" />
             </button>

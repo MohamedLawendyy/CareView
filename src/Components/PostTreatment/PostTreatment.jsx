@@ -251,13 +251,9 @@ export default function PostTreatment() {
                             <p className="text-2xl font-bold">{count}</p>
                         </div>
                         <div className="text-center">
-                            <p className="text-sm text-gray-500">Status</p>
+                            <p className="text-sm text-gray-500">message</p>
                             <p className="text-2xl font-bold">
-                                {isFinished
-                                    ? "Finished"
-                                    : isTraining
-                                    ? "Training"
-                                    : "Ready"}
+                                keep going
                             </p>
                         </div>
                     </div>
@@ -288,42 +284,7 @@ export default function PostTreatment() {
                         Training Dashboard
                     </h2>
                 </div>
-
-                {/* Stats Cards with higher contrast */}
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="bg-white bg-opacity-20 p-4 rounded-lg border border-white border-opacity-30">
-                        <p className="text-sm text-white text-opacity-90 mb-1">
-                            Current Status
-                        </p>
-                        <p className="text-xl font-semibold text-white">
-                            {isFinished ? (
-                                <span className="flex items-center">
-                                    <span className="w-3 h-3 bg-green-400 rounded-full mr-2"></span>
-                                    Completed
-                                </span>
-                            ) : isTraining ? (
-                                <span className="flex items-center">
-                                    <span className="w-3 h-3 bg-yellow-400 rounded-full mr-2 animate-pulse"></span>
-                                    In Progress
-                                </span>
-                            ) : (
-                                <span className="flex items-center">
-                                    <span className="w-3 h-3 bg-blue-400 rounded-full mr-2"></span>
-                                    Ready
-                                </span>
-                            )}
-                        </p>
-                    </div>
-
-                    <div className="bg-white bg-opacity-20 p-4 rounded-lg border border-white border-opacity-30">
-                        <p className="text-sm text-white text-opacity-90 mb-1">
-                            Correct Reps
-                        </p>
-                        <p className="text-xl font-semibold text-white">
-                            {count}
-                        </p>
-                    </div>
-                </div>
+                {/* Training list from api */}
 
                 {/* Instructions Card with better contrast */}
                 <div className="bg-white bg-opacity-20 p-5 rounded-lg border border-white border-opacity-30 mb-6">
@@ -502,58 +463,7 @@ export default function PostTreatment() {
                     </div>
                 </div>
 
-                {/* System Status with better contrast */}
-                <div className="bg-white bg-opacity-20 p-5 rounded-lg border border-white border-opacity-30 mt-auto">
-                    <h3 className="font-semibold text-lg text-white mb-3 flex items-center">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 mr-2"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M13 10V3L4 14h7v7l9-11h-7z"
-                            />
-                        </svg>
-                        System Status
-                    </h3>
-                    <div className="space-y-3">
-                        <div className="flex justify-between items-center">
-                            <span className="text-white">Camera</span>
-                            <span
-                                className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                                    stream
-                                        ? "bg-green-500 text-white"
-                                        : "bg-red-500 text-white"
-                                }`}
-                            >
-                                {stream ? "Active" : "Inactive"}
-                            </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span className="text-white">AI Model</span>
-                            <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-green-500 text-white">
-                                Connected
-                            </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span className="text-white">Frame Rate</span>
-                            <span className="font-medium text-white">
-                                2 fps
-                            </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span className="text-white">Last Update</span>
-                            <span className="font-medium text-white">
-                                {new Date().toLocaleTimeString()}
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
         </div>
     );

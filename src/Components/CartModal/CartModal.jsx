@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import DefaultProductImage from "../../assets/images/panadolColdFlu.jpeg";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { CartContext } from "../../Context/CartContext";
 
 export default function CartModal({
     onClose,
@@ -13,6 +14,7 @@ export default function CartModal({
     setCartItemsCount,
 }) {
     const token = localStorage.getItem("userToken");
+    const { setCartCount } = useContext(CartContext);
 
     const authAxios = axios.create({
         headers: {
@@ -47,14 +49,6 @@ export default function CartModal({
                 throw error;
             }
         },
-        onSuccess: (data) => {
-            const count =
-                data?.items?.reduce(
-                    (total, item) => total + item.quantity,
-                    0
-                ) || 0;
-            setCartItemsCount(count);
-        },
     });
 
     const { data: cartTotalResponse, refetch: refetchTotal } = useQuery({
@@ -74,6 +68,18 @@ export default function CartModal({
 
     const cartItems = cartResponse?.items || [];
     const cartTotal = cartTotalResponse?.totalPrice || 0;
+
+    // Calculate total quantity
+    const totalQuantity = cartItems.reduce(
+        (total, item) => total + item.quantity,
+        0
+    );
+
+    // Update both local state and context whenever cart items change
+    useEffect(() => {
+        setCartItemsCount(totalQuantity);
+        setCartCount(totalQuantity);
+    }, [totalQuantity, setCartItemsCount, setCartCount]);
 
     const handleRemove = async (itemId) => {
         try {
@@ -143,12 +149,7 @@ export default function CartModal({
             <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] flex flex-col">
                 <div className="flex justify-between items-center p-4 border-b">
                     <h2 className="text-xl font-bold text-third">
-                        Your Shopping Cart (
-                        {cartItems.reduce(
-                            (total, item) => total + item.quantity,
-                            0
-                        )}{" "}
-                        items)
+                        Your Shopping Cart ({totalQuantity} items)
                     </h2>
                     <button
                         onClick={onClose}

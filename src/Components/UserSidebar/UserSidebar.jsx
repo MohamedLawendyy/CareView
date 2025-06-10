@@ -17,8 +17,8 @@ export default function UserSidebar({ isSidebarOpen, toggleSidebar }) {
         { name: "Doctor finder", icon: "fluent:doctor-24-filled", path: "/doctor-finder" },
         { name: "Pharmacy", icon: "healthicons:pharmacy-24px", path: "/pharmacy" },
         { name: "Post Treatment", icon: "ic:baseline-monitor-heart", path: "/post-treatment" },
-        { name: "Chats", icon: "fluent:chat-12-filled", path: "/chats" },
-        { name: "History", icon: "iconamoon:history-duotone", path: "/history" },
+        // { name: "Chats", icon: "fluent:chat-12-filled", path: "/chats" },
+        { name: "History", icon: "tabler:clock-filled", path: "/history" },
     ];
 
     const bottomItems = [
@@ -34,8 +34,8 @@ export default function UserSidebar({ isSidebarOpen, toggleSidebar }) {
     const handleLogout = () => {
         if (!window.confirm("Are you sure you want to log out?")) return;
 
-            localStorage.removeItem("userToken");
-            localStorage.removeItem("userData");
+        localStorage.removeItem("userToken");
+        localStorage.removeItem("userData");
 
         toast.success("Logged out successfully", {
             position: "top-right",
@@ -66,7 +66,7 @@ export default function UserSidebar({ isSidebarOpen, toggleSidebar }) {
 
     return (
         <div
-            className={`bg-primary text-textPrimary ${isSidebarOpen ? "w-64" : "w-20"} h-screen py-7 px-2 fixed top-0 left-0 transition-all duration-300 flex flex-col z-50`}
+            className={`bg-primary text-textPrimary ${isSidebarOpen ? "w-64 px-2" : "w-0 lg:w-20 items-center lg:px-2"} h-screen py-7  fixed top-0 left-0 transition-all duration-300 flex flex-col z-50`}
         >
             {/* Logo and Toggle */}
             <div className="relative px-4 mb-8">
@@ -93,7 +93,7 @@ export default function UserSidebar({ isSidebarOpen, toggleSidebar }) {
             </div>
 
             {/* Main Navigation */}
-            <nav className="flex-1 space-y-2 overflow-y-auto">
+            <nav className={`flex-1 space-y-2 overflow-y-auto overflow-x-hidden ${isSidebarOpen ? "" : "hidden lg:block"} `}>
                 {navItems.map((item) => (
                     <div
                         key={item.name}
@@ -104,8 +104,8 @@ export default function UserSidebar({ isSidebarOpen, toggleSidebar }) {
                         <button
                             onClick={() => handleItemClick(item)}
                             className={`w-full flex items-center h-full ${isSidebarOpen ? "px-4" : "px-3"} rounded-lg transition-colors ${activeSection === item.name
-                                    ? "bg-secondary text-white"
-                                    : "hover:bg-gray-700/30 text-third"
+                                ? "bg-secondary text-white"
+                                : "hover:bg-gray-700/30 text-third"
                                 }`}
                         >
                             <Icon
@@ -167,6 +167,6 @@ export default function UserSidebar({ isSidebarOpen, toggleSidebar }) {
                     </div>
                 ))}
             </div>
-        </div>
+        </div >
     );
 }

@@ -155,7 +155,7 @@ export default function DoctorCard({ doctor, userToken }) {
         <div className="flex flex-col bg-white rounded-xl shadow-lg overflow-hidden border-0 transition-all duration-300 hover:shadow-xl w-full max-w-md">
             {/* Doctor Header */}
             <div
-                className="p-6 relative"
+                className="p-6 h-32 relative"
                 style={{ backgroundColor: "#152A38" }}
             >
                 <div className="absolute inset-0 opacity-5 bg-white"></div>
@@ -192,10 +192,10 @@ export default function DoctorCard({ doctor, userToken }) {
                 </div>
             </div>
 
-            {/* Doctor Details - Removed overflow-y-auto */}
+            {/* Doctor Details*/}
             <div className="p-6 flex-grow">
                 <div className="space-y-5">
-                    {/* Enhanced Date Selection */}
+                    {/* Date Selection */}
                     <div>
                         <div className="flex items-center justify-between mb-3">
                             <label
@@ -266,7 +266,7 @@ export default function DoctorCard({ doctor, userToken }) {
                         </div>
                     </div>
 
-                    {/* Enhanced Time Slots */}
+                    {/* Time Slots */}
                     <div>
                         <label
                             className="flex items-center gap-2 font-medium mb-3"
@@ -301,7 +301,7 @@ export default function DoctorCard({ doctor, userToken }) {
                 </div>
             </div>
 
-            {/* Enhanced Footer with Notes and Book Button */}
+            {/* Footer with Notes and Book Button */}
             <div className="p-6 bg-gray-50 border-t border-gray-200">
                 <div className="mb-4">
                     <label

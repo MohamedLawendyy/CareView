@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import Swal from "sweetalert2";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-const SuccessPage = () => {
+export default function SuccessPage() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const paymentId = searchParams.get("payment_id");
@@ -28,7 +28,8 @@ const SuccessPage = () => {
     }, [paymentId, navigate]);
 
     // This component doesn't render anything visible
-    return null;
+    return <>
+
+    </>;
 };
 
-export default SuccessPage;

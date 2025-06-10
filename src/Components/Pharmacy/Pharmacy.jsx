@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import ProductCard from "../ProductCard/ProductCard";
 import Message from "../Message/Message.jsx";
@@ -8,6 +8,7 @@ import CartModal from "../CartModal/CartModal.jsx";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { CartContext } from "../../Context/CartContext.jsx";
 
 export default function Pharmacy() {
     const [products, setProducts] = useState([]);
@@ -22,13 +23,47 @@ export default function Pharmacy() {
         pageSize: 10,
         totalCount: 0,
     });
-    const [cartItemsCount, setCartItemsCount] = useState(0);
+    const { cartCount, setCartCount } = useContext(CartContext)
 
     const token = localStorage.getItem("userToken");
 
     const authAxios = axios.create({
         headers: {
             Authorization: `Bearer ${token}`,
+        },
+    });
+
+    const {
+        refetch: refetchCart,
+    } = useQuery({
+        queryKey: ["cart"],
+        queryFn: async () => {
+            try {
+                const response = await authAxios.get(
+                    "https://careview.runasp.net/api/cart/GetUserCart"
+                );
+                return response.data;
+            } catch (error) {
+                if (error.response?.status === 401) {
+                    Swal.fire({
+                        title: "Session Expired",
+                        text: "Please login again to view your cart",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    }).then(() => {
+                        window.location.href = "/login";
+                    });
+                }
+                throw error;
+            }
+        },
+        onSuccess: (data) => {
+            const count =
+                data?.items?.reduce(
+                    (total, item) => total + item.quantity,
+                    0
+                ) || 0;
+            setCartCount(count);
         },
     });
 
@@ -121,6 +156,8 @@ export default function Pharmacy() {
                 console.error("Error adding to cart:", error);
             }
             return false;
+        } finally {
+            refetchCart()
         }
     };
 
@@ -182,7 +219,7 @@ export default function Pharmacy() {
                 backgroundRepeat: "repeat",
             }}
         >
-            <div className="fixed top-4 right-4 z-50">
+            <div className="fixed top-4 right-[100px] z-50">
                 <button
                     className="relative bg-primary hover:bg-primary-dark p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-105"
                     onClick={() => setShowCart(true)}
@@ -192,16 +229,16 @@ export default function Pharmacy() {
                         icon="solar:cart-bold"
                         className="text-2xl text-third"
                     />
-                    {cartItemsCount > 0 && (
+                    {cartCount > 0 && (
                         <span className="absolute -top-1 -right-1 text-xs text-white font-bold bg-red-600 rounded-full w-5 h-5 flex items-center justify-center">
-                            {cartItemsCount}
+                            {cartCount}
                         </span>
                     )}
                 </button>
             </div>
 
             <div className="container mx-auto px-4 sm:px-8 relative z-10">
-                <h1 className="text-3xl font-bold mb-6 text-secondary">
+                <h1 className="text-3xl font-bold mb-6 text-secondary w-fit">
                     Pharmacy Products
                 </h1>
 
@@ -309,10 +346,10 @@ export default function Pharmacy() {
                                     -
                                     {Math.min(
                                         pagination.pageIndex *
-                                            pagination.pageSize,
+                                        pagination.pageSize,
                                         (pagination.pageIndex - 1) *
-                                            pagination.pageSize +
-                                            filteredProducts.length
+                                        pagination.pageSize +
+                                        filteredProducts.length
                                     )}{" "}
                                     items
                                 </div>
@@ -325,11 +362,10 @@ export default function Pharmacy() {
                                             )
                                         }
                                         disabled={pagination.pageIndex === 1}
-                                        className={`flex items-center justify-center px-4 h-10 rounded-lg transition-all duration-300 ${
-                                            pagination.pageIndex === 1
-                                                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                                                : "text-white bg-secondary hover:bg-secondary-dark hover:shadow-md"
-                                        }`}
+                                        className={`flex items-center justify-center px-4 h-10 rounded-lg transition-all duration-300 ${pagination.pageIndex === 1
+                                            ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                                            : "text-white bg-secondary hover:bg-secondary-dark hover:shadow-md"
+                                            }`}
                                     >
                                         <Icon
                                             icon="mdi:chevron-left"
@@ -358,17 +394,17 @@ export default function Pharmacy() {
 
                                         {filteredProducts.length >=
                                             pagination.pageSize && (
-                                            <button
-                                                onClick={() =>
-                                                    handlePageChange(
-                                                        pagination.pageIndex + 1
-                                                    )
-                                                }
-                                                className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-secondary transition-colors"
-                                            >
-                                                {pagination.pageIndex + 1}
-                                            </button>
-                                        )}
+                                                <button
+                                                    onClick={() =>
+                                                        handlePageChange(
+                                                            pagination.pageIndex + 1
+                                                        )
+                                                    }
+                                                    className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-secondary transition-colors"
+                                                >
+                                                    {pagination.pageIndex + 1}
+                                                </button>
+                                            )}
                                     </div>
 
                                     <button
@@ -381,12 +417,11 @@ export default function Pharmacy() {
                                             filteredProducts.length <
                                             pagination.pageSize
                                         }
-                                        className={`flex items-center justify-center px-4 h-10 rounded-lg transition-all duration-300 ${
-                                            filteredProducts.length <
+                                        className={`flex items-center justify-center px-4 h-10 rounded-lg transition-all duration-300 ${filteredProducts.length <
                                             pagination.pageSize
-                                                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                                                : "text-white bg-secondary hover:bg-secondary-dark hover:shadow-md"
-                                        }`}
+                                            ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                                            : "text-white bg-secondary hover:bg-secondary-dark hover:shadow-md"
+                                            }`}
                                     >
                                         <span className="mr-1">Next</span>
                                         <Icon
@@ -407,7 +442,7 @@ export default function Pharmacy() {
                     onRemove={removeFromCart}
                     onUpdate={updateCartItem}
                     onCheckout={handleCheckout}
-                    setCartItemsCount={setCartItemsCount}
+                    setCartItemsCount={setCartCount}
                 />
             )}
         </div>

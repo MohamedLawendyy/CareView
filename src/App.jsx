@@ -10,6 +10,7 @@ import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute.jsx";
 import Doctors from "./Components/DoctorFinder/Doctors.jsx";
 import Chatbot from "./Components/Chatbot/Chatbot.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import CartContextProvider from "./Context/CartContext.jsx";
 
 // Lazy-loaded components
 const DoctorSignup = React.lazy(() =>
@@ -112,10 +113,6 @@ const router = createBrowserRouter([
                 element: <PostTreatment />,
             },
             {
-                path: "chats",
-                element: <Chats />,
-            },
-            {
                 path: "doctor-finder",
                 element: <Doctors />,
             },
@@ -138,28 +135,29 @@ let query = new QueryClient();
 function App() {
     return (
         <QueryClientProvider client={query}>
-            <AuthContextProvider>
-                <React.Suspense
-                    fallback={
-                        <div className="flex items-center justify-center h-screen">
-                            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
-                        </div>
-                    }
-                >
-                    <Toaster
-                        position="top-right"
-                        toastOptions={{
-                            duration: 3000,
-                            style: {
-                                background: "#363636",
-                                color: "#fff",
-                            },
-                        }}
-                    />
-                    <Chatbot />
-                    <RouterProvider router={router} />
-                </React.Suspense>
-            </AuthContextProvider>
+            <CartContextProvider>
+                <AuthContextProvider>
+                    <React.Suspense
+                        fallback={
+                            <div className="flex items-center justify-center h-screen">
+                                <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
+                            </div>
+                        }
+                    >
+                        <Toaster
+                            position="top-right"
+                            toastOptions={{
+                                duration: 3000,
+                                style: {
+                                    background: "#363636",
+                                    color: "#fff",
+                                },
+                            }}
+                        />
+                        <RouterProvider router={router} />
+                    </React.Suspense>
+                </AuthContextProvider>
+            </CartContextProvider>
         </QueryClientProvider>
     );
 }
