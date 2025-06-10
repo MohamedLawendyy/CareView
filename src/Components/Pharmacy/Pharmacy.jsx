@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import ProductCard from "../ProductCard/ProductCard";
-import Message from "../Message/Message.jsx";
 import SectionBG from "../../assets/images/SectionBG.svg";
 import DefaultProductImage from "../../assets/images/panadolColdFlu.jpeg";
 import CartModal from "../CartModal/CartModal.jsx";
@@ -9,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { CartContext } from "../../Context/CartContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function Pharmacy() {
     const [products, setProducts] = useState([]);
@@ -23,7 +23,8 @@ export default function Pharmacy() {
         pageSize: 10,
         totalCount: 0,
     });
-    const { cartCount, setCartCount } = useContext(CartContext)
+    const { cartCount, setCartCount } = useContext(CartContext);
+    const navigate = useNavigate();
 
     const token = localStorage.getItem("userToken");
 
@@ -33,9 +34,7 @@ export default function Pharmacy() {
         },
     });
 
-    const {
-        refetch: refetchCart,
-    } = useQuery({
+    const { refetch: refetchCart } = useQuery({
         queryKey: ["cart"],
         queryFn: async () => {
             try {
@@ -51,7 +50,7 @@ export default function Pharmacy() {
                         icon: "warning",
                         confirmButtonText: "OK",
                     }).then(() => {
-                        window.location.href = "/login";
+                        navigate("/login");
                     });
                 }
                 throw error;
@@ -157,7 +156,7 @@ export default function Pharmacy() {
             }
             return false;
         } finally {
-            refetchCart()
+            refetchCart();
         }
     };
 
@@ -184,7 +183,11 @@ export default function Pharmacy() {
     const handleCheckout = async () => {
         try {
             const response = await authAxios.post(
-                "https://careview.runasp.net/api/cart/Pay"
+                "https://careview.runasp.net/api/cart/Pay",
+                {
+                    successUrl: `${window.location.origin}/checkout/success`,
+                    cancelUrl: `${window.location.origin}/pharmacy`,
+                }
             );
             window.location.href = response.data.url;
         } catch (error) {
@@ -246,7 +249,7 @@ export default function Pharmacy() {
                     <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
                         <p>{error}</p>
                         <button
-                            onClick={() => (window.location.href = "/login")}
+                            onClick={() => navigate("/login")}
                             className="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
                         >
                             Go to Login
@@ -346,10 +349,10 @@ export default function Pharmacy() {
                                     -
                                     {Math.min(
                                         pagination.pageIndex *
-                                        pagination.pageSize,
+                                            pagination.pageSize,
                                         (pagination.pageIndex - 1) *
-                                        pagination.pageSize +
-                                        filteredProducts.length
+                                            pagination.pageSize +
+                                            filteredProducts.length
                                     )}{" "}
                                     items
                                 </div>
@@ -362,10 +365,11 @@ export default function Pharmacy() {
                                             )
                                         }
                                         disabled={pagination.pageIndex === 1}
-                                        className={`flex items-center justify-center px-4 h-10 rounded-lg transition-all duration-300 ${pagination.pageIndex === 1
-                                            ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                                            : "text-white bg-secondary hover:bg-secondary-dark hover:shadow-md"
-                                            }`}
+                                        className={`flex items-center justify-center px-4 h-10 rounded-lg transition-all duration-300 ${
+                                            pagination.pageIndex === 1
+                                                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                                                : "text-white bg-secondary hover:bg-secondary-dark hover:shadow-md"
+                                        }`}
                                     >
                                         <Icon
                                             icon="mdi:chevron-left"
@@ -394,17 +398,17 @@ export default function Pharmacy() {
 
                                         {filteredProducts.length >=
                                             pagination.pageSize && (
-                                                <button
-                                                    onClick={() =>
-                                                        handlePageChange(
-                                                            pagination.pageIndex + 1
-                                                        )
-                                                    }
-                                                    className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-secondary transition-colors"
-                                                >
-                                                    {pagination.pageIndex + 1}
-                                                </button>
-                                            )}
+                                            <button
+                                                onClick={() =>
+                                                    handlePageChange(
+                                                        pagination.pageIndex + 1
+                                                    )
+                                                }
+                                                className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-secondary transition-colors"
+                                            >
+                                                {pagination.pageIndex + 1}
+                                            </button>
+                                        )}
                                     </div>
 
                                     <button
@@ -417,11 +421,12 @@ export default function Pharmacy() {
                                             filteredProducts.length <
                                             pagination.pageSize
                                         }
-                                        className={`flex items-center justify-center px-4 h-10 rounded-lg transition-all duration-300 ${filteredProducts.length <
+                                        className={`flex items-center justify-center px-4 h-10 rounded-lg transition-all duration-300 ${
+                                            filteredProducts.length <
                                             pagination.pageSize
-                                            ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                                            : "text-white bg-secondary hover:bg-secondary-dark hover:shadow-md"
-                                            }`}
+                                                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                                                : "text-white bg-secondary hover:bg-secondary-dark hover:shadow-md"
+                                        }`}
                                     >
                                         <span className="mr-1">Next</span>
                                         <Icon

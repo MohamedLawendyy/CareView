@@ -36,9 +36,6 @@ const MyDiagnoses = React.lazy(() =>
 const PostTreatment = React.lazy(() =>
     import("./Components/PostTreatment/PostTreatment.jsx")
 );
-const Chats = React.lazy(() =>
-    import("./Components/Chats/Chats.jsx")
-);
 const History = React.lazy(() => import("./Components/History/History.jsx"));
 const NotFound = React.lazy(() => import("./Components/NotFound/NotFound.jsx"));
 const SuccessPage = React.lazy(() =>

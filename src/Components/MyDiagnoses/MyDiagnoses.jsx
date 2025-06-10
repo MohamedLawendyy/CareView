@@ -355,13 +355,13 @@ export default function MyDignoses() {
                                 {isDoctor
                                     ? [
                                         ...new Set(
-                                            appointments.map((a) => a.userId)
+                                            appointments.map((a) => a.userName)
                                         ),
                                     ].length
                                     : [
                                         ...new Set(
                                             appointments.map(
-                                                (a) => a.doctorId
+                                                (a) => a.doctorName
                                             )
                                         ),
                                     ].length}
@@ -449,7 +449,6 @@ export default function MyDignoses() {
                                         ? "You don't have any appointments matching this filter."
                                         : "You don't have any appointments matching this filter."}
                                 </p>
-
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -466,8 +465,8 @@ export default function MyDignoses() {
                                             appointmentId={
                                                 appointment.appointmentId
                                             }
-                                            patientId={appointment.userId}
-                                            doctorId={appointment.doctorId}
+                                            userName={appointment.userName || appointment.patientName}
+                                            doctorName={appointment.doctorName}
                                             appointmentDate={
                                                 appointment.appointmentDate
                                             }

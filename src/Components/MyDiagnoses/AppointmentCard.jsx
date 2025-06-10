@@ -7,8 +7,9 @@ import Swal from "sweetalert2";
 
 export default function AppointmentCard({
     appointmentId,
-    patientId,
-    doctorId,
+    userName,
+    patientName,
+    doctorName,
     note = "General Consultation", // Default value here
     appointmentDate,
     isUpcoming,
@@ -102,8 +103,8 @@ export default function AppointmentCard({
                 <div className="flex justify-between items-start">
                     <h3 className="font-bold text-xl text-gray-800 mb-2">
                         {isDoctorView
-                            ? `Patient: ${patientId}`
-                            : `Doctor: ${doctorId}`}
+                            ? `Patient: ${userName || patientName}`
+                            : `Doctor: ${doctorName}`}
                     </h3>
                     <button
                         onClick={handleDeleteAppointment}
@@ -172,8 +173,8 @@ export default function AppointmentCard({
 
 AppointmentCard.propTypes = {
     appointmentId: PropTypes.string.isRequired,
-    patientId: PropTypes.string.isRequired,
-    doctorId: PropTypes.string.isRequired,
+    userName: PropTypes.string.isRequired,
+    doctorName: PropTypes.string.isRequired,
     note: PropTypes.string, // Note is now optional
     appointmentDate: PropTypes.string.isRequired,
     isUpcoming: PropTypes.bool.isRequired,
