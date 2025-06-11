@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import CameraComponent from "../Camera/Camera.jsx"; // Import the camera component
 
 export default function PostTreatment() {
     // State management
@@ -9,130 +8,103 @@ export default function PostTreatment() {
     const [isTraining, setIsTraining] = useState(false);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [stream, setStream] = useState(null); // Add stream state
-    const [feedback, setFeedback] = useState(null); // Add feedback state from API
+    const [feedback, setFeedback] = useState(null);
+    const [exercise, setExercise] = useState("bicep");
+    const [stage, setStage] = useState(null);
+    const [isCameraOn, setIsCameraOn] = useState(false);
+    const [flaskVideoUrl, setFlaskVideoUrl] = useState(
+        "http://localhost:5000/video_feed"
+    );
+
+    // List of valid exercises
+    const validExercises = [
+        "bicep",
+        "pullup",
+        "pushup",
+        "glutebridge",
+        "squat",
+        "rightshoulderwall",
+        "leftshoulderwall",
+        "rightpnfdiagonal",
+        "leftpnfdiagonal",
+        "rightlawnmower",
+        "leftlawnmower",
+        "pronehorizontalabduction",
+    ];
 
     const videoRef = useRef(null);
-    const canvasRef = useRef(null);
     const intervalRef = useRef(null);
+    const dataIntervalRef = useRef(null);
 
     // API Configuration
     const api = axios.create({
-        baseURL: "http://localhost:5173/api", // Replace with your actual API endpoint
+        baseURL: "https://localhost:7290/api/Train",
         timeout: 10000,
-        headers: {
-            "Content-Type": "multipart/form-data",
-        },
     });
 
-    // Handle when camera is started from the CameraComponent
-    const handleCameraStarted = (stream) => {
-        setStream(stream);
-        if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-        }
-    };
-
-    // Handle when camera is stopped from the CameraComponent
-    const handleCameraStopped = () => {
-        setStream(null);
-        if (videoRef.current) {
-            videoRef.current.srcObject = null;
-        }
-    };
-
-    // Process and send frame data
-    const sendFrameToBackend = async () => {
-        if (!videoRef.current || !canvasRef.current || isFinished) return;
-
-        const canvas = canvasRef.current;
-        const video = videoRef.current;
-        const ctx = canvas.getContext("2d");
-
-        // Set canvas dimensions
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-
-        // Draw video frame to canvas
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
+    // Set the exercise type
+    const setExerciseType = async (exerciseType) => {
         try {
-            canvas.toBlob(
-                async (blob) => {
-                    setLoading(true);
-                    try {
-                        const formData = new FormData();
-                        formData.append("frame", blob, "frame.jpg");
-                        
-                        // API call to process the frame
-                        const response = await api.post("/process-frame", formData);
-                        
-                        /*
-                        // Expected API response structure:
-                        // {
-                        //   success: boolean,
-                        //   correct: boolean,
-                        //   feedback: string,
-                        //   count: number
-                        // }
-                        */
-                        
-                        if (response.data.success) {
-                            setFeedback(response.data.feedback || null);
-                            if (response.data.correct) {
-                                setCount(prev => response.data.count || prev + 1);
-                            }
-                        } else {
-                            setError(response.data.error || "Failed to process frame");
-                        }
-                    } catch (err) {
-                        console.error("API Error:", err);
-                        setError("Failed to connect to the server. Please try again.");
-                    } finally {
-                        setLoading(false);
-                    }
-                },
-                "image/jpeg",
-                0.8
-            );
+            const response = await api.get(`/set_exercise/${exerciseType}`);
+            if (response.data.status) {
+                setExercise(exerciseType);
+                setError(null);
+            } else {
+                setError("Failed to set exercise");
+            }
         } catch (err) {
-            console.error("Frame processing error:", err);
-            setError("Error capturing video frame");
+            console.error("Exercise setting error:", err);
+            setError("Failed to set exercise");
         }
+    };
+
+    // Get training data
+    const getTrainingData = async () => {
+        try {
+            const response = await api.get("/data");
+            if (response.data) {
+                setCount(response.data.counter);
+                setFeedback(response.data.message);
+                setStage(response.data.stage);
+            }
+        } catch (err) {
+            console.error("Data fetch error:", err);
+        }
+    };
+
+    // Start/Stop camera functions
+    const startCamera = () => {
+        setIsCameraOn(true);
+    };
+
+    const stopCamera = () => {
+        setIsCameraOn(false);
     };
 
     // Training control functions
     const toggleTraining = async () => {
         if (isTraining) {
             clearInterval(intervalRef.current);
+            clearInterval(dataIntervalRef.current);
             setIsTraining(false);
         } else {
-            if (!stream) {
+            if (!isCameraOn) {
                 setError("Please start camera first");
                 return;
             }
-            
+
             try {
-                // API call to initialize training session
-                const initResponse = await api.post("/start-training");
-                /*
-                // Expected API response structure:
-                // {
-                //   success: boolean,
-                //   session_id: string,
-                //   message: string
-                // }
-                */
-                
-                if (!initResponse.data.success) {
-                    setError(initResponse.data.message || "Failed to start training session");
-                    return;
+                // API call to start training session
+                const initResponse = await api.get("/start");
+
+                if (initResponse.data) {
+                    // Start polling for training data
+                    dataIntervalRef.current = setInterval(getTrainingData, 400);
+                    setIsTraining(true);
+                    setError(null);
+                } else {
+                    setError("Failed to start training session");
                 }
-                
-                // Start sending frames to API
-                intervalRef.current = setInterval(sendFrameToBackend, 500); // Send frame every 500ms
-                setIsTraining(true);
-                setError(null);
             } catch (err) {
                 console.error("Initialization error:", err);
                 setError("Failed to initialize training session");
@@ -142,26 +114,18 @@ export default function PostTreatment() {
 
     const finishTraining = async () => {
         clearInterval(intervalRef.current);
-        
+        clearInterval(dataIntervalRef.current);
+
         try {
             // API call to end training session
-            const finishResponse = await api.post("/end-training");
-            /*
-            // Expected API response structure:
-            // {
-            //   success: boolean,
-            //   total_count: number,
-            //   message: string
-            // }
-            */
-            
-            if (finishResponse.data.success) {
-                setCount(finishResponse.data.total_count || count);
+            const finishResponse = await api.get("/stop");
+
+            if (finishResponse.data) {
                 setIsFinished(true);
                 setIsTraining(false);
                 setFeedback("Training completed successfully!");
             } else {
-                setError(finishResponse.data.message || "Failed to properly end training session");
+                setError("Failed to properly end training session");
             }
         } catch (err) {
             console.error("Finish error:", err);
@@ -173,9 +137,10 @@ export default function PostTreatment() {
     useEffect(() => {
         return () => {
             clearInterval(intervalRef.current);
+            clearInterval(dataIntervalRef.current);
             // Clean up any ongoing session if component unmounts
             if (isTraining) {
-                api.post("/end-training").catch(console.error);
+                api.get("/stop").catch(console.error);
             }
         };
     }, []);
@@ -194,34 +159,66 @@ export default function PostTreatment() {
                         {error}
                     </div>
                 )}
-                
-                {/* Feedback from API */}
-                {feedback && (
-                    <div className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-4">
-                        {feedback}
-                    </div>
-                )}
 
-                {/* Camera component */}
+                {/* Exercise selection */}
                 <div className="mb-4">
-                    <CameraComponent
-                        onCameraStart={handleCameraStarted}
-                        onCameraStop={handleCameraStopped}
-                        showDeviceSelection={true}
-                    />
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Select Exercise
+                    </label>
+                    <select
+                        value={exercise}
+                        onChange={(e) => setExerciseType(e.target.value)}
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                        disabled={isTraining}
+                    >
+                        {validExercises.map((ex) => (
+                            <option key={ex} value={ex}>
+                                {ex}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
-                {/* Hidden video and canvas elements for frame processing */}
-                <div className="hidden">
-                    <video ref={videoRef} autoPlay playsInline muted />
-                    <canvas ref={canvasRef} />
+                {/* Camera display */}
+                <div className="mb-4">
+                    <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden mb-4">
+                        {isCameraOn ? (
+                            <img
+                                src={flaskVideoUrl}
+                                alt="Video Feed"
+                                className="absolute inset-0 w-full h-full object-cover"
+                            />
+                        ) : (
+                            <div className="absolute inset-0 flex items-center justify-center text-white bg-black bg-opacity-50">
+                                Camera is not active
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="flex gap-4 mb-4">
+                        {!isCameraOn ? (
+                            <button
+                                onClick={startCamera}
+                                className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                            >
+                                Start Camera
+                            </button>
+                        ) : (
+                            <button
+                                onClick={stopCamera}
+                                className="px-6 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
+                            >
+                                Stop Camera
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 {/* Control buttons */}
                 <div className="flex space-x-4 mb-4">
                     <button
                         onClick={toggleTraining}
-                        disabled={!stream || isFinished || loading}
+                        disabled={!isCameraOn || isFinished || loading}
                         className={`px-4 py-2 rounded ${
                             isTraining ? "bg-red-500" : "bg-green-500"
                         } text-white disabled:bg-gray-400`}
@@ -251,9 +248,9 @@ export default function PostTreatment() {
                             <p className="text-2xl font-bold">{count}</p>
                         </div>
                         <div className="text-center">
-                            <p className="text-sm text-gray-500">message</p>
+                            <p className="text-sm text-gray-500">Stage</p>
                             <p className="text-2xl font-bold">
-                                keep going
+                                {stage || "Not started"}
                             </p>
                         </div>
                     </div>
@@ -284,7 +281,49 @@ export default function PostTreatment() {
                         Training Dashboard
                     </h2>
                 </div>
-                {/* Training list from api */}
+
+                {/* Feedback from API - Moved to right section */}
+                {feedback && (
+                    <div className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-6">
+                        {feedback}
+                    </div>
+                )}
+
+                {/* Video Feedback Section */}
+                {isCameraOn && (
+                    <div className="bg-white bg-opacity-20 p-5 rounded-lg border border-white border-opacity-30 mb-6">
+                        <h3 className="font-semibold text-lg text-white mb-3 flex items-center">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5 mr-2"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                                />
+                            </svg>
+                            Exercise Feedback
+                        </h3>
+                        <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden">
+                            {isCameraOn ? (
+                                <img
+                                    src={flaskVideoUrl}
+                                    alt="Exercise Feedback"
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                />
+                            ) : (
+                                <div className="absolute inset-0 flex items-center justify-center text-white">
+                                    Feedback not available
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
 
                 {/* Instructions Card with better contrast */}
                 <div className="bg-white bg-opacity-20 p-5 rounded-lg border border-white border-opacity-30 mb-6">
@@ -462,8 +501,6 @@ export default function PostTreatment() {
                         </div>
                     </div>
                 </div>
-
-                
             </div>
         </div>
     );

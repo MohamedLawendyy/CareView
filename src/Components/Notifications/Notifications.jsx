@@ -107,10 +107,10 @@ const Notifications = () => {
                             No notifications found
                         </div>
                     ) : (
-                        notifications.map((notification) =>
+                        notifications.map((notification,index) =>
                         (
                             <div
-                                key={notification.id}
+                                key={index}
                                 onClick={() => {
                                     markAsRead(notification.id);
                                 }}
@@ -120,12 +120,12 @@ const Notifications = () => {
                                     } flex flex-col justify-between text-start`}
                             >
                                 <div>
-                                    <p className="text-sm font-medium text-gray-900 dark:text-secondary">
+                                    <div className="text-sm font-medium text-gray-900 dark:text-secondary">
                                         {notification.status === 1 && (
                                             <div className="h-2 w-2 bg-red-500 inline-block me-2 rounded-full"></div>
                                         )}
                                         {notification.message}
-                                    </p>
+                                    </div>
                                 </div>
                                 <div className="flex justify-between items-center space-x-2">
                                     <small className="text-xs text-gray-500">
