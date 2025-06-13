@@ -300,7 +300,7 @@ const Chatbot = () => {
                     isOpen ? "transform rotate-45" : ""
                 }`}
             >
-                <Icon icon="mingcute:ai-fill" width="32" height="32" />
+                <Icon icon="streamline-flex:ai-scanner-robot-remix" width="32" height="32" />
             </button>
         </>
     );

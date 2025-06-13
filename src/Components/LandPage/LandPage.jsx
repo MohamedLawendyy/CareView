@@ -12,10 +12,10 @@ import Footer from "../Footer/Footer.jsx";
 // Constants
 const FEATURES = [
     {
-        icon: "mdi:x-ray-box",
-        title: "AI-Powered X-ray Analysis",
+        icon: "mingcute:ai-fill",
+        title: "AI-Powered Recovery ChatBot",
         description:
-            "Upload X-ray images and receive instant AI-driven diagnoses and treatment recommendations.",
+            "Describe your infection symptoms and get personalized AI-generated recovery training and treatment suggestions.",
     },
     {
         icon: "healthicons:pharmacy-24px",
@@ -66,7 +66,7 @@ const WHY_CHOOSE_US = [
     },
 ];
 
-const PARTNERS = ["Partner 1", "Partner 2", "Partner 3"];
+// const PARTNERS = ["Partner 1", "Partner 2", "Partner 3"];
 
 // Components
 const FeatureCard = ({ icon, title, description }) => (
@@ -326,7 +326,7 @@ export default function LandPage() {
                             </div>
 
                             {/* Our Partners */}
-                            <div className="text-center">
+                            {/* <div className="text-center">
                                 <h3 className="text-3xl font-bold mb-8 text-white">
                                     Our Partners
                                 </h3>
@@ -346,7 +346,7 @@ export default function LandPage() {
                                         </motion.div>
                                     ))}
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </section>
