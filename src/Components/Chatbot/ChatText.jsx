@@ -15,35 +15,11 @@ const ChatText = ({ scrollToBottom }) => {
         scrollToBottom();
     }, [messages, scrollToBottom]);
 
-    /* 
-    // UNCOMMENT THIS WHEN USING API
-    const fetchBotResponse = async (userMessage) => {
-        try {
-            const response = await axios.post('/api/chatbot', {
-                message: userMessage
-            });
-            return response.data.response;
-        } catch (error) {
-            console.error('Error fetching bot response:', error);
-            return "Sorry, I'm having trouble connecting to the server.";
-        }
-    };
-    */
-
     const handleSend = () => {
         if (inputValue.trim()) {
             const newMessage = { text: inputValue, sender: "user" };
             setMessages([...messages, newMessage]);
             setInputValue("");
-
-            /* 
-            // UNCOMMENT THIS WHEN USING API
-            fetchBotResponse(inputValue).then(botResponse => {
-                setMessages(prev => [...prev, { text: botResponse, sender: "bot" }]);
-            });
-            */
-
-            // COMMENT THIS DOWN CODE WHEN USING API
             
             setTimeout(() => {
                 setMessages((prev) => [
@@ -54,8 +30,6 @@ const ChatText = ({ scrollToBottom }) => {
                     },
                 ]);
             }, 1000);
-
-            // COMMENT THIS ABOVE CODE WHEN USING API
         }
     };
 
