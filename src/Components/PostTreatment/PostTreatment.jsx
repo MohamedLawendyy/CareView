@@ -25,120 +25,7 @@ export default function PostTreatment() {
         consistency: 0,
     });
 
-    // Exercise descriptions
-    const exerciseDescriptions = {
-        bicep: {
-            description: "Bicep curls to strengthen arm muscles",
-            instructions: [
-                "Stand straight with a dumbbell in each hand",
-                "Keep your elbows close to your torso",
-                "Curl the weights while contracting your biceps",
-                "Slowly lower the weights back to starting position",
-            ],
-        },
-        pullup: {
-            description:
-                "Upper body strength exercise focusing on back and arms",
-            instructions: [
-                "Grab the pull-up bar with palms facing forward",
-                "Hang with arms fully extended",
-                "Pull yourself up until your chin is above the bar",
-                "Lower yourself back down with control",
-            ],
-        },
-        pushup: {
-            description: "Classic exercise for chest, shoulders and triceps",
-            instructions: [
-                "Start in a plank position with hands shoulder-width apart",
-                "Lower your body until your chest nearly touches the floor",
-                "Keep your body straight throughout the movement",
-                "Push back up to the starting position",
-            ],
-        },
-        glutebridge: {
-            description: "Exercise targeting glutes and hamstrings",
-            instructions: [
-                "Lie on your back with knees bent and feet flat on the floor",
-                "Lift your hips up until your body forms a straight line",
-                "Squeeze your glutes at the top of the movement",
-                "Slowly lower back down to starting position",
-            ],
-        },
-        squat: {
-            description: "Lower body exercise for legs and glutes",
-            instructions: [
-                "Stand with feet shoulder-width apart",
-                "Lower your body as if sitting back into a chair",
-                "Keep your chest up and knees behind your toes",
-                "Push through your heels to return to standing",
-            ],
-        },
-        rightshoulderwall: {
-            description: "Shoulder mobility exercise for the right side",
-            instructions: [
-                "Stand with your right side against a wall",
-                "Keep your right arm straight and slide it up the wall",
-                "Maintain contact with the wall throughout",
-                "Slowly return to starting position",
-            ],
-        },
-        leftshoulderwall: {
-            description: "Shoulder mobility exercise for the left side",
-            instructions: [
-                "Stand with your left side against a wall",
-                "Keep your left arm straight and slide it up the wall",
-                "Maintain contact with the wall throughout",
-                "Slowly return to starting position",
-            ],
-        },
-        rightpnfdiagonal: {
-            description: "PNF diagonal pattern for right arm",
-            instructions: [
-                "Start with right arm extended diagonally down",
-                "Move arm diagonally upward across your body",
-                "Follow with your eyes to engage neck muscles",
-                "Return to starting position with control",
-            ],
-        },
-        leftpnfdiagonal: {
-            description: "PNF diagonal pattern for left arm",
-            instructions: [
-                "Start with left arm extended diagonally down",
-                "Move arm diagonally upward across your body",
-                "Follow with your eyes to engage neck muscles",
-                "Return to starting position with control",
-            ],
-        },
-        rightlawnmower: {
-            description: "Lawnmower exercise for right side",
-            instructions: [
-                "Bend at hips with right hand holding a weight",
-                "Pull the weight up toward your armpit",
-                "Keep your back straight throughout",
-                "Slowly lower back to starting position",
-            ],
-        },
-        leftlawnmower: {
-            description: "Lawnmower exercise for left side",
-            instructions: [
-                "Bend at hips with left hand holding a weight",
-                "Pull the weight up toward your armpit",
-                "Keep your back straight throughout",
-                "Slowly lower back to starting position",
-            ],
-        },
-        pronehorizontalabduction: {
-            description: "Exercise for shoulder and upper back",
-            instructions: [
-                "Lie face down on a bench with arms hanging down",
-                "Raise arms out to the sides like a bird",
-                "Squeeze shoulder blades together at the top",
-                "Slowly lower arms back to starting position",
-            ],
-        },
-    };
-
-    // List of valid exercises
+    // Valid exercises list
     const validExercises = [
         "Select your training",
         "bicep",
@@ -153,6 +40,135 @@ export default function PostTreatment() {
         "rightlawnmower",
         "leftlawnmower",
         "pronehorizontalabduction",
+    ];
+
+    // Invalid exercises list with YouTube references
+    const invalidExercises = {
+        "pendulum swings": {
+            description:
+                "Gravity-assisted shoulder mobility; reduces joint stiffness post-op",
+            videoId:
+                "https://www.youtube.com/embed/wD3jQJ-dGnY?si=_z-eEzCd-ayxRBzJ",
+        },
+        "external rotation with resistance band": {
+            description:
+                "Strengthens infraspinatus and teres minor; key for rotator cuff rehab",
+            videoId:
+                "https://www.youtube.com/embed/ybNV36DoRfY?si=7ozGoXmFTrYZy_ly",
+        },
+        "wall slides": {
+            description:
+                "Improves scapular rhythm and shoulder elevation range",
+            videoId:
+                "https://www.youtube.com/embed/WIdjSjzNS2A?si=52OngxKT_B5X5hKT",
+        },
+        "scapular retraction exercises": {
+            description:
+                "Trains rhomboids and middle trapezius for posture and stability",
+            videoId:
+                "https://www.youtube.com/embed/hJffqKmfnfA?si=I5-SNJ4RA3GuXF-_",
+        },
+        "wand-assisted shoulder flexion": {
+            description:
+                "Used for active-assisted range work to improve shoulder mobility",
+            videoId:
+                "https://www.youtube.com/embed/lalbbBdtSZ0?si=c9Or-Fe3pQiNivK7",
+        },
+        "serratus punches": {
+            description: "Enhances scapular protraction and prevents winging",
+            videoId:
+                "https://www.youtube.com/embed/pD4fZIFlXAY?si=zUmph112k9xwPeHR",
+        },
+        "passive ROM exercises": {
+            description:
+                "Maintains joint capsule extensibility in stiff or painful shoulders",
+            videoId:
+                "https://www.youtube.com/embed/J-YE4lAVEmo?si=rY6jAo7QOOS6qB6_",
+        },
+        "cane-assisted ROM": {
+            description:
+                "Guided assistance for improving shoulder ROM post-injury",
+            videoId:
+                "https://www.youtube.com/embed/tozSAv28oeg?si=MgBZtpmeE7XcrLpX",
+        },
+        "towel stretches": {
+            description:
+                "Self-stretching using a towel to target internal rotation deficits",
+            videoId:
+                "https://www.youtube.com/embed/omeww85Mhkw?si=qoyXEYJZrkNlGqIX",
+        },
+        "scapular stabilization": {
+            description:
+                "Isometric and dynamic control for shoulder blade coordination",
+            videoId:
+                "https://www.youtube.com/embed/WoP0-kLXsRo?si=GU3yugqY14hoFnFE",
+        },
+        "side-lying scapular protraction": {
+            description:
+                "Targets serratus anterior to improve scapular stability",
+            videoId:
+                "https://www.youtube.com/embed/pjC62I0FjC0?si=nrSZp7sf1X1W9uBc",
+        },
+        "isometric shoulder flexion and abduction": {
+            description: "Builds strength without joint motion post-surgery",
+            videoId:
+                "https://www.youtube.com/embed/5pO505spQn8?si=PkgrvyHuYoVuhvZ2",
+        },
+        "scaption in external rotation": {
+            description:
+                "Safe ROM pattern that activates supraspinatus without impingement",
+            videoId:
+                "https://www.youtube.com/embed/4GX3SUbmOSs?si=1MrpY8dXJ-lkjqJC",
+        },
+        "Codman's (pendulum) exercises": {
+            description:
+                "Uses gravity to promote gentle shoulder motion and pain relief",
+            videoId:
+                "https://www.youtube.com/embed/QF_ubbr_RUE?si=QsJzz5lo6lBf60F5",
+        },
+        "cross-body adduction stretch": {
+            description:
+                "Increases posterior capsule flexibility, often limited in frozen shoulder",
+            videoId:
+                "https://www.youtube.com/embed/swvXpKN832E?si=LmeWHudIMIIr6aLU",
+        },
+        "table slides": {
+            description: "Reduces friction to support active-assisted mobility",
+            videoId:
+                "https://www.youtube.com/embed/8bWUvRhU_mM?si=icvISoH95-je3Agr",
+        },
+        "supine passive shoulder elevation": {
+            description:
+                "Gravity-eliminated position to restore flexion early post-op",
+            videoId:
+                "https://www.youtube.com/embed/szppUBZJ4l0?si=5qITYhrsrZ3RFonM",
+        },
+        "closed-chain wall push-up plus": {
+            description:
+                "Dynamic scapular stability through protraction in functional position",
+            videoId:
+                "https://www.youtube.com/embed/J19XZHc07cc?si=xF_Y3WfguXKlzf5C",
+        },
+        "prone horizontal abduction": {
+            description:
+                "Recruits middle/lower trapezius and posterior deltoid for scapular control",
+            videoId:
+                "https://www.youtube.com/embed/_ipVLm6NZ-s?si=ylpyOm8UMVWjzH51",
+        },
+    };
+
+    // Grouped exercises for dropdown with optgroup
+    const groupedExercises = [
+        {
+            label: "Trackable Exercises",
+            options: validExercises.filter(
+                (ex) => ex !== "Select your training"
+            ),
+        },
+        {
+            label: "Reference Exercises",
+            options: Object.keys(invalidExercises),
+        },
     ];
 
     const videoRef = useRef(null);
@@ -174,14 +190,24 @@ export default function PostTreatment() {
         }
 
         try {
-            const response = await api.get(`/set_exercise/${exerciseType}`);
-            if (response.data.status) {
+            // For valid exercises, call the API
+            if (validExercises.includes(exerciseType)) {
+                const response = await api.get(`/set_exercise/${exerciseType}`);
+                if (response.data.status) {
+                    setExercise(exerciseType);
+                    setError(null);
+                    setStatusMessage(`Exercise set to: ${exerciseType}`);
+                } else {
+                    setError("Failed to set exercise");
+                    setStatusMessage("Failed to set exercise");
+                }
+            } else {
+                // For invalid exercises, just set the state
                 setExercise(exerciseType);
                 setError(null);
-                setStatusMessage(`Exercise set to: ${exerciseType}`);
-            } else {
-                setError("Failed to set exercise");
-                setStatusMessage("Failed to set exercise");
+                setStatusMessage(
+                    `Reference exercise selected: ${exerciseType}`
+                );
             }
         } catch (err) {
             console.error("Exercise setting error:", err);
@@ -190,6 +216,9 @@ export default function PostTreatment() {
         }
     };
 
+    // Check if current exercise is in invalidExercises
+    const isInvalidExercise = exercise && invalidExercises[exercise];
+
     // Get training data
     const getTrainingData = async () => {
         try {
@@ -197,7 +226,6 @@ export default function PostTreatment() {
             if (response.data) {
                 setCount(response.data.counter);
 
-                // Update status message continuously
                 if (response.data.message) {
                     setStatusMessage(response.data.message);
                 }
@@ -205,7 +233,6 @@ export default function PostTreatment() {
                 setFeedback(response.data.message);
                 setStage(response.data.stage);
 
-                // Update performance metrics
                 setPerformanceMetrics({
                     accuracy: Math.min(
                         100,
@@ -218,7 +245,6 @@ export default function PostTreatment() {
                     ),
                 });
 
-                // Automatically finish training when count reaches 10
                 if (response.data.counter >= 10) {
                     finishTraining();
                 }
@@ -242,7 +268,7 @@ export default function PostTreatment() {
 
     // Training control functions
     const startTraining = async () => {
-        if (!isCameraOn) {
+        if (!isCameraOn && !isInvalidExercise) {
             setError("Please start camera first");
             setStatusMessage("Error: Camera not active");
             return;
@@ -252,20 +278,29 @@ export default function PostTreatment() {
             setLoading(true);
             setStatusMessage("Initializing training session...");
 
-            // API call to start training session
-            const initResponse = await api.get("/start");
-
-            if (initResponse.data) {
-                // Start polling for training data
-                dataIntervalRef.current = setInterval(getTrainingData, 300); // Update every 0.3 seconds
+            if (isInvalidExercise) {
+                // For reference exercises, just simulate training
                 setIsTraining(true);
                 setError(null);
-                setStatusMessage(
-                    "Training session started - Begin your exercise"
-                );
+                setStatusMessage("Reference exercise demonstration playing");
+                dataIntervalRef.current = setInterval(() => {
+                    setCount((prev) => Math.min(prev + 1, 10));
+                }, 1000);
             } else {
-                setError("Failed to start training session");
-                setStatusMessage("Failed to start training");
+                // For valid exercises, call the API
+                const initResponse = await api.get("/start");
+
+                if (initResponse.data) {
+                    dataIntervalRef.current = setInterval(getTrainingData, 300);
+                    setIsTraining(true);
+                    setError(null);
+                    setStatusMessage(
+                        "Training session started - Begin your exercise"
+                    );
+                } else {
+                    setError("Failed to start training session");
+                    setStatusMessage("Failed to start training");
+                }
             }
         } catch (err) {
             console.error("Initialization error:", err);
@@ -284,18 +319,19 @@ export default function PostTreatment() {
         try {
             setStatusMessage("Finalizing training session...");
 
-            // API call to end training session
-            const finishResponse = await api.get("/stop");
-
-            if (finishResponse.data) {
-                setIsFinished(false);
-                setIsTraining(false);
-                setExercise(null); // Reset exercise selection when training is finished
-                setStatusMessage("Training completed successfully!");
-            } else {
-                setError("Failed to properly end training session");
-                setStatusMessage("Error completing training");
+            if (!isInvalidExercise) {
+                const finishResponse = await api.get("/stop");
+                if (!finishResponse.data) {
+                    setError("Failed to properly end training session");
+                    setStatusMessage("Error completing training");
+                    return;
+                }
             }
+
+            setIsFinished(false);
+            setIsTraining(false);
+            setExercise(null);
+            setStatusMessage("Training completed successfully!");
         } catch (err) {
             console.error("Finish error:", err);
             setError("Failed to properly end training session");
@@ -309,8 +345,7 @@ export default function PostTreatment() {
             clearInterval(intervalRef.current);
             clearInterval(dataIntervalRef.current);
             clearInterval(messageIntervalRef.current);
-            // Clean up any ongoing session if component unmounts
-            if (isTraining) {
+            if (isTraining && !isInvalidExercise) {
                 api.get("/stop").catch(console.error);
             }
         };
@@ -350,67 +385,93 @@ export default function PostTreatment() {
                         className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
                         disabled={isTraining || exercise !== null}
                     >
-                        {validExercises.map((ex) => (
-                            <option key={ex} value={ex}>
-                                {ex}
-                            </option>
+                        <option value="Select your training">
+                            Select your training
+                        </option>
+                        {groupedExercises.map((group, index) => (
+                            <optgroup key={index} label={group.label}>
+                                {group.options.map((ex) => (
+                                    <option key={ex} value={ex}>
+                                        {ex}
+                                    </option>
+                                ))}
+                            </optgroup>
                         ))}
                     </select>
                 </div>
 
-                {/* Camera display */}
+                {/* Camera display or YouTube video */}
                 <div className="mb-4 flex-1 flex flex-col">
-                    <div className="relative w-full h-full bg-black rounded-lg overflow-hidden mb-4 shadow-lg">
-                        {isCameraOn ? (
-                            <img
-                                src={flaskVideoUrl}
-                                alt="Video Feed"
-                                className="absolute inset-0 w-full h-full object-cover"
-                            />
-                        ) : (
-                            <div className="absolute inset-0 flex items-center justify-center text-white bg-black bg-opacity-50">
-                                <div className="text-center">
-                                    <Icon
-                                        icon="mdi:camera-off-outline"
-                                        className="h-12 w-12 mx-auto mb-2"
-                                    />
-                                    <p>Camera is not active</p>
+                    {isInvalidExercise ? (
+                        <div className="relative w-full h-full bg-black rounded-lg overflow-hidden mb-4 shadow-lg">
+                            <iframe
+                                className="absolute inset-0 w-full h-full"
+                                src={`${
+                                    invalidExercises[exercise].videoId
+                                }?autoplay=${isTraining ? 1 : 0}`}
+                                title={`${exercise} demonstration`}
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            ></iframe>
+                        </div>
+                    ) : (
+                        <div className="relative w-full h-full bg-black rounded-lg overflow-hidden mb-4 shadow-lg">
+                            {isCameraOn ? (
+                                <img
+                                    src={flaskVideoUrl}
+                                    alt="Video Feed"
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                />
+                            ) : (
+                                <div className="absolute inset-0 flex items-center justify-center text-white bg-black bg-opacity-50">
+                                    <div className="text-center">
+                                        <Icon
+                                            icon="mdi:camera-off-outline"
+                                            className="h-12 w-12 mx-auto mb-2"
+                                        />
+                                        <p>Camera is not active</p>
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                    </div>
+                            )}
+                        </div>
+                    )}
 
                     {/* Combined Camera and Training Controls */}
                     <div className="flex justify-between gap-4">
-                        {!isCameraOn ? (
-                            <button
-                                onClick={startCamera}
-                                disabled={!exercise}
-                                className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
-                            >
-                                <Icon
-                                    icon="mdi:camera-outline"
-                                    className="h-5 w-5 mr-2"
-                                />
-                                Start Camera
-                            </button>
-                        ) : (
-                            <button
-                                onClick={stopCamera}
-                                className="flex-1 px-6 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors flex items-center justify-center"
-                            >
-                                <Icon
-                                    icon="mdi:camera-off"
-                                    className="h-5 w-5 mr-2"
-                                />
-                                Stop Camera
-                            </button>
+                        {!isInvalidExercise && (
+                            <>
+                                {!isCameraOn ? (
+                                    <button
+                                        onClick={startCamera}
+                                        disabled={!exercise}
+                                        className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
+                                    >
+                                        <Icon
+                                            icon="mdi:camera-outline"
+                                            className="h-5 w-5 mr-2"
+                                        />
+                                        Start Camera
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={stopCamera}
+                                        className="flex-1 px-6 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors flex items-center justify-center"
+                                    >
+                                        <Icon
+                                            icon="mdi:camera-off"
+                                            className="h-5 w-5 mr-2"
+                                        />
+                                        Stop Camera
+                                    </button>
+                                )}
+                            </>
                         )}
 
                         <button
                             onClick={startTraining}
                             disabled={
-                                !isCameraOn ||
+                                (!isCameraOn && !isInvalidExercise) ||
                                 !exercise ||
                                 isTraining ||
                                 loading
@@ -433,7 +494,9 @@ export default function PostTreatment() {
                                         icon="mdi:play-circle-outline"
                                         className="h-5 w-5 mr-2"
                                     />
-                                    Start Training
+                                    {isInvalidExercise
+                                        ? "Play Demo"
+                                        : "Start Training"}
                                 </>
                             )}
                         </button>
@@ -452,58 +515,60 @@ export default function PostTreatment() {
                     </div>
                 </div>
 
-                {/* Training statistics */}
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <div className="grid grid-cols-3 gap-4 text-center">
-                        {/* Target */}
-                        <div className="p-3 bg-blue-50 rounded-lg border border-blue-100">
-                            <div className="flex justify-center mb-1">
-                                <Icon
-                                    icon="mdi:target"
-                                    className="h-5 w-5 text-blue-600"
-                                />
+                {/* Training statistics - Only shown for valid exercises */}
+                {!isInvalidExercise && (
+                    <div className="bg-white p-4 rounded-lg shadow">
+                        <div className="grid grid-cols-3 gap-4 text-center">
+                            {/* Target */}
+                            <div className="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                                <div className="flex justify-center mb-1">
+                                    <Icon
+                                        icon="mdi:target"
+                                        className="h-5 w-5 text-blue-600"
+                                    />
+                                </div>
+                                <p className="text-sm text-gray-600 font-medium">
+                                    Target
+                                </p>
+                                <p className="text-2xl font-bold text-blue-600">
+                                    10
+                                </p>
                             </div>
-                            <p className="text-sm text-gray-600 font-medium">
-                                Target
-                            </p>
-                            <p className="text-2xl font-bold text-blue-600">
-                                10
-                            </p>
-                        </div>
 
-                        {/* Completed */}
-                        <div className="p-3 bg-green-50 rounded-lg border border-green-100">
-                            <div className="flex justify-center mb-1">
-                                <Icon
-                                    icon="mdi:check-circle-outline"
-                                    className="h-5 w-5 text-green-600"
-                                />
+                            {/* Completed */}
+                            <div className="p-3 bg-green-50 rounded-lg border border-green-100">
+                                <div className="flex justify-center mb-1">
+                                    <Icon
+                                        icon="mdi:check-circle-outline"
+                                        className="h-5 w-5 text-green-600"
+                                    />
+                                </div>
+                                <p className="text-sm text-gray-600 font-medium">
+                                    Completed
+                                </p>
+                                <p className="text-2xl font-bold text-green-600">
+                                    {count}
+                                </p>
                             </div>
-                            <p className="text-sm text-gray-600 font-medium">
-                                Completed
-                            </p>
-                            <p className="text-2xl font-bold text-green-600">
-                                {count}
-                            </p>
-                        </div>
 
-                        {/* Stage */}
-                        <div className="p-3 bg-purple-50 rounded-lg border border-purple-100">
-                            <div className="flex justify-center mb-1">
-                                <Icon
-                                    icon="mdi:progress-clock"
-                                    className="h-5 w-5 text-purple-600"
-                                />
+                            {/* Stage */}
+                            <div className="p-3 bg-purple-50 rounded-lg border border-purple-100">
+                                <div className="flex justify-center mb-1">
+                                    <Icon
+                                        icon="mdi:progress-clock"
+                                        className="h-5 w-5 text-purple-600"
+                                    />
+                                </div>
+                                <p className="text-sm text-gray-600 font-medium">
+                                    Stage
+                                </p>
+                                <p className="text-2xl font-bold text-purple-600">
+                                    {stage || "-"}
+                                </p>
                             </div>
-                            <p className="text-sm text-gray-600 font-medium">
-                                Stage
-                            </p>
-                            <p className="text-2xl font-bold text-purple-600">
-                                {stage || "-"}
-                            </p>
                         </div>
                     </div>
-                </div>
+                )}
             </div>
 
             {/* Right section - Information panel */}
@@ -545,7 +610,7 @@ export default function PostTreatment() {
                     </div>
                 </div>
 
-                {/* Exercise Information - Shows when exercise is selected */}
+                {/* Exercise Information */}
                 {showExerciseInfo && (
                     <div className="bg-white bg-opacity-20 p-5 rounded-lg border border-white border-opacity-30 mb-6 shadow-lg">
                         <h3 className="font-semibold text-lg text-white mb-3 flex items-center">
@@ -555,43 +620,41 @@ export default function PostTreatment() {
                             />
                             {exercise} Exercise
                         </h3>
-                        <p className="text-white mb-4">
-                            {exerciseDescriptions[exercise]?.description}
-                        </p>
 
-                        <h4 className="font-semibold text-white mb-2 flex items-center">
-                            <Icon
-                                icon="mdi:playlist-check"
-                                className="h-5 w-5 mr-2"
-                            />
-                            How to perform:
-                        </h4>
-                        <ul className="space-y-3">
-                            {exerciseDescriptions[exercise]?.instructions.map(
-                                (instruction, index) => (
-                                    <li
-                                        key={index}
-                                        className="flex items-start"
-                                    >
-                                        <span className="bg-white bg-opacity-30 text-white rounded-full p-1 mr-3 flex-shrink-0">
-                                            <Icon
-                                                icon={`mdi:numeric-${
-                                                    index + 1
-                                                }-circle-outline`}
-                                                className="h-4 w-4"
-                                            />
-                                        </span>
-                                        <span className="text-white">
-                                            {instruction}
-                                        </span>
-                                    </li>
-                                )
-                            )}
-                        </ul>
+                        {isInvalidExercise ? (
+                            <>
+                                <p className="text-white mb-4">
+                                    {invalidExercises[exercise].description}
+                                </p>
+                                <p className="text-white text-sm italic">
+                                    <Icon
+                                        icon="mdi:information-outline"
+                                        className="inline mr-1"
+                                    />
+                                    This is a reference exercise. Watch the
+                                    video demonstration.
+                                </p>
+                            </>
+                        ) : (
+                            <>
+                                <p className="text-white mb-4">
+                                    Perform this exercise while the system
+                                    tracks your form.
+                                </p>
+                                <p className="text-white text-sm italic">
+                                    <Icon
+                                        icon="mdi:information-outline"
+                                        className="inline mr-1"
+                                    />
+                                    This is a trackable exercise. The camera
+                                    will monitor your movements.
+                                </p>
+                            </>
+                        )}
                     </div>
                 )}
 
-                {/* General Guidelines - Shows when no exercise is selected or after training is finished */}
+                {/* General Guidelines (shown when no exercise selected or after training) */}
                 {showGeneralGuidelines && (
                     <div className="bg-white bg-opacity-20 p-5 rounded-lg border border-white border-opacity-30 mb-6 shadow-lg">
                         <h3 className="font-semibold text-lg text-white mb-3 flex items-center">
@@ -610,7 +673,9 @@ export default function PostTreatment() {
                                     />
                                 </span>
                                 <span className="text-white group-hover:text-opacity-90 transition">
-                                    Position yourself 2-3 feet from camera
+                                    {isInvalidExercise
+                                        ? "Watch the demonstration carefully before attempting"
+                                        : "Position yourself 2-3 feet from camera"}
                                 </span>
                             </li>
                             <li className="flex items-start group">
@@ -621,7 +686,9 @@ export default function PostTreatment() {
                                     />
                                 </span>
                                 <span className="text-white group-hover:text-opacity-90 transition">
-                                    Ensure good lighting on your body
+                                    {isInvalidExercise
+                                        ? "Follow along with the video at your own pace"
+                                        : "Ensure good lighting on your body"}
                                 </span>
                             </li>
                             <li className="flex items-start group">
@@ -650,38 +717,43 @@ export default function PostTreatment() {
                     </div>
                 )}
 
-                {/* Progress Section */}
-                <div className="bg-white bg-opacity-20 p-5 rounded-lg border border-white border-opacity-30 shadow-lg">
-                    <h3 className="font-semibold text-lg text-white mb-3 flex items-center">
-                        <Icon icon="mdi:chart-line" className="h-5 w-5 mr-2" />
-                        Session Progress
-                    </h3>
-                    <div className="space-y-4">
-                        <div>
-                            <div className="flex justify-between text-sm text-white mb-1">
-                                <span>Completion</span>
-                                <span>
-                                    {Math.min(
-                                        Math.floor((count / 10) * 100),
-                                        100
-                                    )}
-                                    %
-                                </span>
-                            </div>
-                            <div className="w-full bg-white bg-opacity-30 rounded-full h-3">
-                                <div
-                                    className="bg-gradient-to-r from-green-400 to-blue-500 h-3 rounded-full transition-all duration-300 ease-out"
-                                    style={{
-                                        width: `${Math.min(
+                {/* Progress Section - Only shown for valid exercises */}
+                {!isInvalidExercise && (
+                    <div className="bg-white bg-opacity-20 p-5 rounded-lg border border-white border-opacity-30 shadow-lg">
+                        <h3 className="font-semibold text-lg text-white mb-3 flex items-center">
+                            <Icon
+                                icon="mdi:chart-line"
+                                className="h-5 w-5 mr-2"
+                            />
+                            Session Progress
+                        </h3>
+                        <div className="space-y-4">
+                            <div>
+                                <div className="flex justify-between text-sm text-white mb-1">
+                                    <span>Completion</span>
+                                    <span>
+                                        {Math.min(
                                             Math.floor((count / 10) * 100),
                                             100
-                                        )}%`,
-                                    }}
-                                ></div>
+                                        )}
+                                        %
+                                    </span>
+                                </div>
+                                <div className="w-full bg-white bg-opacity-30 rounded-full h-3">
+                                    <div
+                                        className="bg-gradient-to-r from-green-400 to-blue-500 h-3 rounded-full transition-all duration-300 ease-out"
+                                        style={{
+                                            width: `${Math.min(
+                                                Math.floor((count / 10) * 100),
+                                                100
+                                            )}%`,
+                                        }}
+                                    ></div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                )}
             </div>
         </div>
     );

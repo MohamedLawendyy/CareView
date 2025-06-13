@@ -21,6 +21,13 @@ export default function ProductCard({ product, onAddToCart, defaultImage }) {
         },
     });
 
+    // Function to get first 6 words of description
+    const getShortDescription = (description) => {
+        if (!description) return "";
+        const words = description.split(" ");
+        return words.slice(0, 6).join(" ") + (words.length > 6 ? "..." : "");
+    };
+
     const handleAddToCart = async () => {
         try {
             const response = await authAxios.get(
@@ -105,8 +112,8 @@ export default function ProductCard({ product, onAddToCart, defaultImage }) {
                 <h3 className="text-base sm:text-lg md:text-xl font-bold mb-1 sm:mb-2 text-third line-clamp-1">
                     {product.name}
                 </h3>
-                <p className="text-xs sm:text-sm text-secondary font-medium line-clamp-2 h-10 sm:h-12">
-                    {product.description}
+                <p className="text-xs sm:text-sm text-secondary font-medium">
+                    {getShortDescription(product.description)}
                 </p>
             </div>
 
